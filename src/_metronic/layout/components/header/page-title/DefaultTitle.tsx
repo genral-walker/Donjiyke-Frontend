@@ -29,7 +29,7 @@ const DefaultTitle: FC = () => {
       )}
       {/* end::Title */}
 
-      {pageBreadcrumbs &&
+      {/* {pageBreadcrumbs &&
         pageBreadcrumbs.length > 0 &&
         config.pageTitle &&
         config.pageTitle.breadCrumbs && (
@@ -58,7 +58,7 @@ const DefaultTitle: FC = () => {
               <li className='breadcrumb-item text-dark'>{pageTitle}</li>
             </ul>
           </>
-        )}
+        )} */}
     </div>
   )
 }

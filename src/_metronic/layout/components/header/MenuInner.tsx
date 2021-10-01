@@ -115,7 +115,7 @@ export function MenuInner() {
           <MenuItem to='/apps/chat/drawer-chat' title='Drawer Chart' hasBullet={true} />
         </MenuInnerWithSub>
       </MenuInnerWithSub>
-      <MenuInnerWithSub
+      {/* <MenuInnerWithSub
         isMega={true}
         title='Mega menu'
         to='/mega-menu'
@@ -123,7 +123,7 @@ export function MenuInner() {
         menuTrigger='click'
       >
         <MegaMenu />
-      </MenuInnerWithSub>
+      </MenuInnerWithSub> */}
     </>
   )
 }
