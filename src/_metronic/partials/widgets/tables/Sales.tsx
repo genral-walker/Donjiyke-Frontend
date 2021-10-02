@@ -1,14 +1,18 @@
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
-import {KTSVG} from '../../../helpers'
+import { useHistory, useLocation } from 'react-router'
+import {KTSVG, toAbsoluteUrl} from '../../../helpers'
 
 type Props = {
   className: string
 }
 
 const SalesTable: React.FC<Props> = ({className}) => {
-  
+
+    const location = useLocation();
+    const history = useHistory();
+
   return (
     <div className={`card ${className}`}>
       {/* begin::Header */}
@@ -22,17 +26,14 @@ const SalesTable: React.FC<Props> = ({className}) => {
           data-bs-toggle='tooltip'
           data-bs-placement='top'
           data-bs-trigger='hover'
-          title='Click to add a user'
+          title='Go to Sales Page'
         >
-          <a
-            href='#'
-            className='btn btn-sm btn-primary'
-            data-bs-toggle=''
-            data-bs-target=''
-          >
-            {/* <KTSVG path='media/icons/duotune/arrows/arr075.svg' className='svg-icon-3' /> */}
-            View All
-          </a>
+         {
+            location.pathname === '/dashboard' &&
+              <button className='btn btn-sm btn-primary' onClick={()=>history.push('/crafted/pages/sales')}>
+                View All
+              </button> 
+          }
         </div>
       </div>
       
@@ -82,6 +83,18 @@ const SalesTable: React.FC<Props> = ({className}) => {
                  </span>
                </td>
                <td className='text-dark fw-bolder fs-6'>$3560</td>
+               <td>
+               <div className='d-flex align-items-center' style={{pointerEvents: 'none'}}>
+                    <div className='symbol symbol-30px me-3'>
+                      <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
+                    </div>
+                    <div className='d-flex justify-content-start flex-column'>    
+                      <a href='#' className='text-dark fw-bolder fs-6'>
+                        Ana Simmons
+                      </a>
+                    </div>
+                  </div>
+               </td>
                <td>
                  <span className='text-dark fw-bolder fs-6'>Issued from the house of the people</span>
                </td>

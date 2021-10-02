@@ -11,6 +11,8 @@ export function PrivateRoutes() {
   const AccountPage = lazy(() => import('../modules/accounts/AccountPage'))
   const WidgetsPage = lazy(() => import('../modules/widgets/WidgetsPage'))
   const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
+  const StocksPage = lazy(() => import('../modules/stocks/StocksPage'))      
+  const SalesPage = lazy(() => import('../modules/sales/SalesPage'))
 
   return (
     <Suspense fallback={<FallbackView />}>
@@ -23,6 +25,8 @@ export function PrivateRoutes() {
         <Route path='/crafted/account' component={AccountPage} />
         <Route path='/apps/chat' component={ChatPage} />
         <Route path='/menu-test' component={MenuTestPage} />
+        <Route path='/crafted/pages/stocks' component={StocksPage} />
+        <Route path='/crafted/pages/sales' component={SalesPage} />
         <Redirect from='/auth' to='/dashboard' />
         <Redirect exact from='/' to='/dashboard' />
         <Redirect to='error/404' />

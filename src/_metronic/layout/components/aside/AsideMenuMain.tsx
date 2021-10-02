@@ -28,9 +28,9 @@ export function AsideMenuMain() {
         </div>
       </div>
 
-      <AsideMenuItem to='' title='Stocks' icon='/media/icons/duotune/art/art002.svg'/>
+      <AsideMenuItem to='/crafted/pages/stocks' title='Stocks' icon='/media/icons/duotune/art/art002.svg'/>
 
-      <AsideMenuItem to='' title='Sales' icon='/media/icons/duotune/graphs/gra001.svg'/>
+      <AsideMenuItem to='/crafted/pages/sales' title='Sales' icon='/media/icons/duotune/graphs/gra001.svg'/>
 
       {/* <AsideMenuItemWithSub
         to='/crafted/pages'
