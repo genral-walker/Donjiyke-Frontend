@@ -60,7 +60,7 @@ export function AsideMenuMain() {
         </AsideMenuItemWithSub>
       </AsideMenuItemWithSub> */}
 
-      <AsideMenuItem to='/crafted/account/overview' title='My Account' icon='/media/icons/duotune/communication/com006.svg'
+      <AsideMenuItem to='/crafted/account' title='My Account' icon='/media/icons/duotune/communication/com006.svg'
         fontIcon='bi-person' />
 
 

@@ -1,19 +1,20 @@
+
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
-import {KTSVG, toAbsoluteUrl} from '../../../helpers'
+import {KTSVG} from '../../../helpers'
 
 type Props = {
   className: string
 }
 
-const TablesWidget13: React.FC<Props> = ({className}) => {
+const SalesTable: React.FC<Props> = ({className}) => {
   
   return (
     <div className={`card ${className}`}>
       {/* begin::Header */}
       <div className='card-header border-0 pt-5'>
         <h3 className='card-title align-items-start flex-column'>
-          <span className='card-label fw-bolder fs-3 mb-1'>Inventory</span>
+          <span className='card-label fw-bolder fs-3 mb-1'>Sales</span>
         </h3>
      
         <div
@@ -22,7 +23,7 @@ const TablesWidget13: React.FC<Props> = ({className}) => {
           data-bs-placement='top'
           data-bs-trigger='hover'
           title='Click to add a user'
-        >      
+        >
           <a
             href='#'
             className='btn btn-sm btn-primary'
@@ -82,18 +83,6 @@ const TablesWidget13: React.FC<Props> = ({className}) => {
                </td>
                <td className='text-dark fw-bolder fs-6'>$3560</td>
                <td>
-               <div className='d-flex align-items-center'>
-                    <div className='symbol symbol-30px me-5'>
-                      <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
-                    </div>
-                    <div className='d-flex justify-content-start flex-column'>
-                      <a href='#' className='text-dark fw-bolder text-hover-primary fs-6'>
-                        Ana Simmons
-                      </a>
-                    </div>
-                  </div>
-               </td>
-               <td>
                  <span className='text-dark fw-bolder fs-6'>Issued from the house of the people</span>
                </td>
                <td className='text-end'>
@@ -122,4 +111,4 @@ const TablesWidget13: React.FC<Props> = ({className}) => {
   )
 }
 
-export {TablesWidget13}
+export {SalesTable}

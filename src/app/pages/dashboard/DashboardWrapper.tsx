@@ -5,7 +5,8 @@ import { PageTitle } from '../../../_metronic/layout/core'
 import {
   MixedWidget1,
   TablesWidget13,
-  TablesWidget10
+  TablesWidget10,
+  SalesTable
 } from '../../../_metronic/partials/widgets'
 
 const DashboardPage: FC = () => (
@@ -19,16 +20,14 @@ const DashboardPage: FC = () => (
     </div>
 
     <div className='row gy-5 g-xl-8'>
-      <TablesWidget13
+      <SalesTable
         className='card-xxl-stretch-50 mb-14 mb-xl-18'
-        title='Sales'
       />
     </div>
 
     <div className='row gy-5 g-xl-8'>
       <TablesWidget13
         className='card-xxl-stretch-50 mb-14 mb-xl-18'
-        title='Inventory'
       />
     </div>
 

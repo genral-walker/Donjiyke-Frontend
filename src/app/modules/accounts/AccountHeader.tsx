@@ -45,16 +45,6 @@ const AccountHeader: React.FC = () => {
                     className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2'
                   >
                     <KTSVG
-                      path='/media/icons/duotune/communication/com006.svg'
-                      className='svg-icon-4 me-1'
-                    />
-                    Developer
-                  </a>
-                  <a
-                    href='#'
-                    className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2'
-                  >
-                    <KTSVG
                       path='/media/icons/duotune/general/gen018.svg'
                       className='svg-icon-4 me-1'
                     />
@@ -68,7 +58,21 @@ const AccountHeader: React.FC = () => {
                       path='/media/icons/duotune/communication/com011.svg'
                       className='svg-icon-4 me-1'
                     />
-                    max@kt.com
+                    admin@demo.com
+                  </a>
+                </div>
+
+                <div className='d-flex flex-wrap fw-bold fs-6 mb-4 pe-2'>
+                
+                <a
+                    href='#'
+                    className='d-flex align-items-center text-gray-400 text-hover-primary me-5 mb-2'
+                  >
+                    <KTSVG
+                      path='/media/icons/duotune/communication/com005.svg'
+                      className='svg-icon-4 me-1'
+                    />
+                    08152638142
                   </a>
                 </div>
               </div>
@@ -77,32 +81,6 @@ const AccountHeader: React.FC = () => {
           </div>
         </div>
 
-        <div className='d-flex overflow-auto h-55px'>
-          <ul className='nav nav-stretch nav-line-tabs nav-line-tabs-2x border-transparent fs-5 fw-bolder flex-nowrap'>
-            <li className='nav-item'>
-              <Link
-                className={
-                  `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/account/overview' && 'active')
-                }
-                to='/crafted/account/overview'
-              >
-                Overview
-              </Link>
-            </li>
-            <li className='nav-item'>
-              <Link
-                className={
-                  `nav-link text-active-primary me-6 ` +
-                  (location.pathname === '/crafted/account/settings' && 'active')
-                }
-                to='/crafted/account/settings'
-              >
-                Settings
-              </Link>
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
   )
