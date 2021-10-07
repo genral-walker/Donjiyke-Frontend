@@ -69,28 +69,28 @@ const SalesPage: React.FC = () => {
                   <div className="col-md-3 fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Kg</span>
+                        <span className="required">Meter</span>
                       </label>
-                      <input type="number" required className="form-control form-control-solid" placeholder="Enter Kg" />
+                      <input type="number" required className="form-control form-control-solid" placeholder="Enter Meter" />
                     </div>
                   </div>
 
                   <div className="col-md-3 fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Metre Run</span>
+                        <span className="required">Payment</span>
                       </label>
 
-                      <input type="number" required className="form-control form-control-solid" placeholder="Enter Metre Run" />
+                      <input type="number" required className="form-control form-control-solid" placeholder="Enter Payment" />
                     </div>
                   </div>
                   <div className="col-md-3 fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Metre Out</span>
+                        <span className="required">Cost</span>
                       </label>
 
-                      <input type="number" required className="form-control form-control-solid" placeholder="Enter Metre Out" />
+                      <input type="number" required className="form-control form-control-solid" placeholder="Enter Cost" />
                     </div>
                   </div>
                   <div className="col-md-3 fv-row">
@@ -105,8 +105,8 @@ const SalesPage: React.FC = () => {
                 </div>
 
                 <div className="d-flex flex-column mb-8">
-                  <label className="fs-6 fw-bold mb-2 required">Issued To</label>
-                  <textarea className="form-control form-control-solid" rows={3} required placeholder="Issued To?"></textarea>
+                  <label className="fs-6 fw-bold mb-2 required">Material</label>
+                  <textarea className="form-control form-control-solid" rows={3} required placeholder="Enter Material"></textarea>
                 </div>
 
               </div>

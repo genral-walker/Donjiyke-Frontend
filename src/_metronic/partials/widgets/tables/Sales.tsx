@@ -46,14 +46,14 @@ const SalesTable: React.FC<Props> = ({className}) => {
             {/* begin::Table head */}
             <thead>
               <tr className='fw-bolder text-muted'>
-                <th className='min-w-120px'>Date In</th>
-                <th className='min-w-100px'>kg</th>
-                <th className='min-w-100px'>Metre Run</th>
-                <th  className='min-w-120px'>Date Out</th>
-                <th className='min-w-100px'>Metre Out</th>
+                <th className='min-w-120px'>Date</th>
+                <th className='min-w-150px'>Material</th>
+                <th className='min-w-100px'>Meter</th>
+                <th  className='min-w-100px'>Payment</th>
+                <th className='min-w-120px'>Cost</th>
                 <th className='min-w-150px'>Issued By</th>
-                <th className='min-w-150px'>Issued To</th>
-                <th className='min-w-100px text-end'>Balance</th>
+                {/* <th className='min-w-150px'>Issued To</th> */}
+                <th className='min-w-120px text-end'>Balance</th>
               </tr>
             </thead>
             {/* end::Table head */}
@@ -68,21 +68,21 @@ const SalesTable: React.FC<Props> = ({className}) => {
                </td>    
                <td>
                  <span className='text-dark fw-bolder fs-6'>
-                   439 kg
+                  T | Black 0.55
                  </span>
                </td>
                <td>
                  <span className='text-dark fw-bolder fs-6'>
-                   3627 mtr
+                   100 m
                  </span>
            
                </td>
                <td>
                  <span className='text-dark fw-bolder fs-6'>
-                 05/28/2020
+                 ₦683,092
                  </span>
                </td>
-               <td className='text-dark fw-bolder fs-6'>$3560</td>
+               <td className='text-dark fw-bolder fs-6'>₦683,312</td>
                <td>
                <div className='d-flex align-items-center' style={{pointerEvents: 'none'}}>
                     <div className='symbol symbol-30px me-3'>
@@ -95,9 +95,6 @@ const SalesTable: React.FC<Props> = ({className}) => {
                     </div>
                   </div>
                </td>
-               <td>
-                 <span className='text-dark fw-bolder fs-6'>Issued from the house of the people</span>
-               </td>
                <td className='text-end'>
                  {/* <a
                    href='#'
@@ -108,7 +105,7 @@ const SalesTable: React.FC<Props> = ({className}) => {
                  <a href='#' className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'>
                    <KTSVG path='/media/icons/duotune/general/gen027.svg' className='svg-icon-3' />
                  </a> */}
-                 <span className='text-dark fw-bolder fs-6'>₦30,000</span>
+                 <span className='text-dark fw-bolder fs-6'>₦323,000</span>
                  
                </td>
              </tr>

@@ -96,18 +96,32 @@ const StocksPage: React.FC = () => {
                   <div className="col-md-3 fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Balance</span>
+                        <span className="required">Cost</span>
                       </label>
 
-                      <input type="number" required className="form-control form-control-solid" placeholder="Enter Balance" />
+                      <input type="number" required className="form-control form-control-solid" placeholder="Enter Cost" />
                     </div>
                   </div>
                 </div>
 
-                <div className="d-flex flex-column mb-8">
+                <div className="row g-9 mb-8">
+                  <div className="col-md-6 fv-row">
+                  <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                      <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                        <span className="required">Balance</span>
+                      </label>
+
+                      <input type="text" required className="form-control form-control-solid" placeholder="Enter Balance" />
+                    </div>
+                  </div>
+
+                  <div className="col-md-6 fv-row">
+                  <div className="d-flex flex-column mb-8">
                   <label className="fs-6 fw-bold mb-2 required">Issued To</label>
                   <textarea className="form-control form-control-solid" rows={3} required placeholder="Issued To?"></textarea>
                 </div>
+                  </div>
+                  </div>
 
               </div>
 

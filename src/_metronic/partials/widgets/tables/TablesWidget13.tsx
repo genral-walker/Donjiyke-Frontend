@@ -53,7 +53,8 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                 <th className='min-w-100px'>Metre Out</th>
                 <th className='min-w-150px'>Issued By</th>
                 <th className='min-w-150px'>Issued To</th>
-                <th className='min-w-100px text-end'>Balance</th>
+                <th className='min-w-120px'>Cost</th>
+                <th className='min-w-120px text-end'>Balance</th>
               </tr>
             </thead>
             {/* end::Table head */}
@@ -82,7 +83,7 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                     05/28/2020
                   </span>
                 </td>
-                <td className='text-dark fw-bolder fs-6'>$3560</td>
+                <td className='text-dark fw-bolder fs-6'>350 mtr</td>
                 <td>
                   <div className='d-flex align-items-center' style={{ pointerEvents: 'none' }}>
                     <div className='symbol symbol-30px me-3'>
@@ -98,6 +99,11 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                 <td>
                   <span className='text-dark fw-bolder fs-6'>Issued from the house of the people</span>
                 </td>
+                <td>
+                  <span className='text-dark fw-bolder fs-6'>
+                  ₦323,710
+                  </span>
+                </td>
                 <td className='text-end'>
                   {/* <a
                    href='#'
@@ -108,7 +114,7 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                  <a href='#' className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'>
                    <KTSVG path='/media/icons/duotune/general/gen027.svg' className='svg-icon-3' />
                  </a> */}
-                  <span className='text-dark fw-bolder fs-6'>₦30,000</span>
+                  <span className='text-dark fw-bolder fs-6'>Balance data</span>
 
                 </td>
               </tr>

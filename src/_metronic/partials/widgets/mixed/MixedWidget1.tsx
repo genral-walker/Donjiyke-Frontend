@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
+import { useHistory, useLocation } from 'react-router'
 import {Dropdown1} from '../../content/dropdown/Dropdown1'
 import {KTSVG} from '../../../helpers'
 
@@ -9,6 +10,10 @@ type Props = {
 }
 
 const MixedWidget1: React.FC<Props> = ({className, color}) => {
+
+  const location = useLocation();
+ const history = useHistory();
+
   return (
     <div className={`card ${className}`}>
       {/* begin::Body */}
@@ -36,7 +41,7 @@ const MixedWidget1: React.FC<Props> = ({className, color}) => {
           {/* begin::Balance */}
           <div className='d-flex text-center flex-column text-white pt-8'>
             <span className='fw-bold fs-7'>Total Balance</span>
-            <span className='fw-bolder fs-2x pt-1'>$37,562.00</span>
+            <span className='fw-bolder fs-2x pt-1'>₦37,562.00</span>
           </div>
           {/* end::Balance */}
         </div>
@@ -57,16 +62,16 @@ const MixedWidget1: React.FC<Props> = ({className, color}) => {
             {/* end::Symbol */}
             {/* begin::Description */}
             <div className='d-flex align-items-center flex-wrap w-100'>
-              {/* begin::Title */}
+              {/* begin::Title */}   
               <div className='mb-1 pe-3 flex-grow-1'>
-                <a href='#' className='fs-5 text-gray-800 text-hover-primary fw-bolder'>
+                <span className='fs-5 text-gray-800 text-hover-primary fw-bolder' onClick={()=>history.push('/crafted/pages/sales')} style={{cursor: 'pointer'}}>
                   Sales
-                </a>
+                </span>
               </div>
               {/* end::Title */}
               {/* begin::Label */}
               <div className='d-flex align-items-center'>
-                <div className='fw-bolder fs-5 text-gray-800 pe-1'>$2,5</div>
+                <div className='fw-bolder fs-5 text-gray-800 pe-1'>₦2,315</div>
               </div>
               {/* end::Label */}
             </div>
@@ -87,14 +92,14 @@ const MixedWidget1: React.FC<Props> = ({className, color}) => {
             <div className='d-flex align-items-center flex-wrap w-100'>
               {/* begin::Title */}
               <div className='mb-1 pe-3 flex-grow-1'>
-                <a href='#' className='fs-5 text-gray-800 text-hover-primary fw-bolder'>
+                <span className='fs-5 text-gray-800 text-hover-primary fw-bolder' onClick={()=>history.push('/crafted/pages/stocks')} style={{cursor: 'pointer'}}>
                   Stocks
-                </a>
+                </span>
               </div>
               {/* end::Title */}
               {/* begin::Label */}
               <div className='d-flex align-items-center'>
-                <div className='fw-bolder fs-5 text-gray-800 pe-1'>$1,7</div>
+                <div className='fw-bolder fs-5 text-gray-800 pe-1'>₦1,792</div>
               </div>
               {/* end::Label */}
             </div>
