@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom'
 // https://github.com/rt2zz/redux-persist
 // import {PersistGate} from 'redux-persist/integration/react'
 import {Provider} from 'react-redux'
-import * as _redux from './setup'
+// import * as _redux from './setup'
 import store from './setup/redux/store'
 // Axios
 import axios from 'axios'
@@ -37,13 +37,13 @@ const {PUBLIC_URL} = process.env
  * @see https://github.com/ctimmerm/axios-mock-adapter
  */
 
-/* const mock = */ _redux.mockAxios(axios)
+// /* const mock = */ _redux.mockAxios(axios)
 /**
  * Inject Metronic interceptors for axios.
  *
  * @see https://github.com/axios/axios#interceptors
  */
-_redux.setupAxios(axios, store)
+// _redux.setupAxios(axios, store)
 
 Chart.register(...registerables)
 

@@ -40,7 +40,11 @@ export function Login() {
     validationSchema: loginSchema,
     onSubmit: (values, {setStatus, setSubmitting}) => {
       setLoading(true)
-      setTimeout(() => {
+      /*
+      WHERE YOU'D MAKE THE RRQUEST
+      */ 
+    /*
+       setTimeout(() => {
         login(values.email, values.password)
           .then(({data: {accessToken}}) => {
             setLoading(false)
@@ -51,7 +55,8 @@ export function Login() {
             setSubmitting(false)
             setStatus('The login detail is incorrect')
           })
-      }, 1000)
+      }, 1000)    
+    */  
     },
   })
 

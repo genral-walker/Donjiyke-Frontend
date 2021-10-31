@@ -12,11 +12,11 @@ import {MasterLayout} from '../../_metronic/layout/MasterLayout'
 import {PrivateRoutes} from './PrivateRoutes'
 import {Logout, AuthPage} from '../modules/auth'
 import {ErrorsPage} from '../modules/errors/ErrorsPage'
-import {RootState} from '../../setup'
+// import {RootState} from '../../setup'
 
 const Routes: FC = () => {
-  const isAuthorized = useSelector<RootState>(({auth}) => auth.user, shallowEqual)
-
+  // const isAuthorized = useSelector<RootState>(({auth}) => auth.user, shallowEqual)
+  const isAuthorized = true //TEST CODE
   return (
     <Switch>
       {!isAuthorized ? (

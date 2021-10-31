@@ -10,8 +10,7 @@ const INITIAL_STATE = {
     name: 'walker',
     mobile: '08164344955',
     role: 'admin',
-    avatar: 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FUser_(computing)&psig=AOvVaw3yPMDPcHAYoiY9Y0_Npafj&ust=1635783644131000&source=images&cd=vfe&ved=0CAsQjRxqFwoTCICntYyH9fMCFQAAAAAdAAAAABAD',
-    auth: {},
+    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS99qly0iUeHsWnxHiMsrVVrHPjFh_Wma8NzHECqmmVXGc4mTDvEuz79s7Kgjfs49cYmII&usqp=CAU',
   } as UserModel,
 }
 
