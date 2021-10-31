@@ -2,10 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 // Redux
 // https://github.com/rt2zz/redux-persist
-import {PersistGate} from 'redux-persist/integration/react'
+// import {PersistGate} from 'redux-persist/integration/react'
 import {Provider} from 'react-redux'
 import * as _redux from './setup'
-import store, {persistor} from './setup/redux/Store'
+import store from './setup/redux/store'
 // Axios
 import axios from 'axios'
 import {Chart, registerables} from 'chart.js'
@@ -51,9 +51,9 @@ ReactDOM.render(
   <MetronicI18nProvider>
     <Provider store={store}>
       {/* Asynchronously persist redux stores and show `SplashScreen` while it's loading. */}
-      <PersistGate persistor={persistor} loading={<div>Loading...</div>}>
+      {/* <PersistGate persistor={persistor} loading={<div>Loading...</div>}> */}
         <App basename={PUBLIC_URL} />
-      </PersistGate>
+      {/* </PersistGate> */}
     </Provider>
   </MetronicI18nProvider>,
   document.getElementById('root')

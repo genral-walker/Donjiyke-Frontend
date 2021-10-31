@@ -1,26 +1,30 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import {FC} from 'react'
-import {shallowEqual, useSelector} from 'react-redux'
-import {Link} from 'react-router-dom'
-import {UserModel} from '../../../../app/modules/auth/models/UserModel'
-import {RootState} from '../../../../setup'
+import { FC } from 'react'
+import { shallowEqual, useSelector } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { UserModel } from '../../../../app/modules/auth/models/UserModel'
+import { useAppSelector } from '../../../../setup/redux/useRedux'
+// import {} from '../..'
 
 const HeaderUserMenu: FC = () => {
-  const user: UserModel = useSelector<RootState>(({auth}) => auth.user, shallowEqual) as UserModel
+  //   const user: UserModel = useSelector<RootState>(({auth}) => auth.user, shallowEqual) as UserModel
+ const user = useAppSelector(({user: {user}})=> user);
+  // const user = useSelector(state => state.user, shallowEqual);
+  console.log(user)
   return (
     <div
       className='menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg menu-state-primary fw-bold py-4 fs-6 w-275px'
       data-kt-menu='true'
     >
-      <div className='menu-item px-3' style={{pointerEvents: 'none'}}>
+      <div className='menu-item px-3' style={{ pointerEvents: 'none' }}>
         <div className='menu-content d-flex align-items-center px-3'>
           <div className='symbol symbol-50px me-5'>
-            <img alt='Logo' src={user.pic} />
+            <img alt='Logo' src={user.avatar} />
           </div>
 
           <div className='d-flex flex-column'>
             <div className='fw-bolder d-flex align-items-center fs-5'>
-              {user.firstname} {user.lastname}
+              {user.name}
               <span className='badge badge-light-success fw-bolder fs-8 px-2 py-1 ms-2'>Admin</span>
             </div>
             <a href='#' className='fw-bold text-muted text-hover-primary fs-7'>
@@ -34,7 +38,7 @@ const HeaderUserMenu: FC = () => {
 
       <div className='menu-item px-5'>
         <Link to={'/crafted/account'} className='menu-link px-5'>
-          My Profile   
+          My Profile
         </Link>
       </div>
 
@@ -53,4 +57,4 @@ const HeaderUserMenu: FC = () => {
   )
 }
 
-export {HeaderUserMenu}
+export { HeaderUserMenu }

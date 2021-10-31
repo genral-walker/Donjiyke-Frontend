@@ -1,34 +1,13 @@
-import {configureStore, getDefaultMiddleware} from '@reduxjs/toolkit'
-import createSagaMiddleware from 'redux-saga'
-import {reduxBatch} from '@manaflair/redux-batch'
-import {persistStore} from 'redux-persist'
-import {rootReducer, rootSaga} from './RootReducer'
 
-const sagaMiddleware = createSagaMiddleware()
-const middleware = [
-  ...getDefaultMiddleware({
-    immutableCheck: false,
-    serializableCheck: false,
-    thunk: true,
-  }),
-  sagaMiddleware,
-]
+import { createStore } from 'redux';
+import rootReducer from './root-reducer';
 
-const store = configureStore({
-  reducer: rootReducer,
-  middleware,
-  devTools: process.env.NODE_ENV !== 'production',
-  enhancers: [reduxBatch],
-})
+const store = createStore(
+    rootReducer,
+    (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()
+);
 
+export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
-/**
- * @see https://github.com/rt2zz/redux-persist#persiststorestore-config-callback
- * @see https://github.com/rt2zz/redux-persist#persistor-object
- */
-export const persistor = persistStore(store)
-
-sagaMiddleware.run(rootSaga)
-
-export default store
+export default store;
