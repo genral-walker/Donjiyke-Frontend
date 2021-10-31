@@ -73,12 +73,13 @@ export function Login() {
           <div className='alert-text font-weight-bold'>{formik.status}</div>
         </div>
       ) : (
-        <div className='mb-10 bg-light-info p-8 rounded'>
-          <div className='text-info'>
-            Use account <strong>admin@demo.com</strong> and password <strong>demo</strong> to
-            continue.
-          </div>
-        </div>
+        // <div className='mb-10 bg-light-info p-8 rounded'>
+        //   <div className='text-info'>
+        //     Use account <strong>admin@demo.com</strong> and password <strong>demo</strong> to
+        //     continue.
+        //   </div>
+        // </div> 
+        '' //this is added to avoid error for the tenray func
       )}
 
       {/* begin::Form group */}
