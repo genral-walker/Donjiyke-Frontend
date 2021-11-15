@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {useState} from 'react'
-import {useDispatch} from 'react-redux'
+import React, { useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import clsx from 'clsx'
-import {Link} from 'react-router-dom'
-import {useFormik} from 'formik'
-// import * as auth from '../redux/AuthRedux'
-// import {login} from '../redux/AuthCRUD'
-import {toAbsoluteUrl} from '../../../../_metronic/helpers'
+import { Link } from 'react-router-dom'
+import { useFormik } from 'formik'
+import axios from 'axios'
+import { useAppDispatch } from '../../../../setup/redux/useRedux'
+import { loginIn } from '../../../../setup/redux/user/userActions'
+
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -26,6 +26,7 @@ const initialValues = {
   password: 'demo',
 }
 
+
 /*
   Formik+YUP+Typescript:
   https://jaredpalmer.com/formik/docs/tutorial#getfieldprops
@@ -34,31 +35,32 @@ const initialValues = {
 
 export function Login() {
   const [loading, setLoading] = useState(false)
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()   
+
   const formik = useFormik({
     initialValues,
     validationSchema: loginSchema,
-    onSubmit: (values, {setStatus, setSubmitting}) => {
+    onSubmit: async (values, { setStatus, setSubmitting }) => {
       setLoading(true)
-      /*
-      WHERE YOU'D MAKE THE RRQUEST
-      */ 
-    /*
-       setTimeout(() => {
-        login(values.email, values.password)
-          .then(({data: {accessToken}}) => {
-            setLoading(false)
-            dispatch(auth.actions.login(accessToken))
-          })
-          .catch(() => {
-            setLoading(false)
-            setSubmitting(false)
-            setStatus('The login detail is incorrect')
-          })
-      }, 1000)    
-    */  
+     
+      try {
+        let res = await axios.post('http://localhost:8000/api/login', {
+          email: values.email,       
+          password: values.password,
+        });
+        setLoading(false)  
+        dispatch(loginIn(res.data))
+
+      } catch (error) {
+        setLoading(false)
+        setSubmitting(false)
+        setStatus('The login detail is incorrect')
+      }
     },
   })
+
+
+
 
   return (
     <form
@@ -84,6 +86,7 @@ export function Login() {
         //     continue.
         //   </div>
         // </div> 
+
         '' //this is added to avoid error for the tenray func
       )}
 
@@ -95,7 +98,7 @@ export function Login() {
           {...formik.getFieldProps('email')}
           className={clsx(
             'form-control form-control-lg form-control-solid',
-            {'is-invalid': formik.touched.email && formik.errors.email},
+            { 'is-invalid': formik.touched.email && formik.errors.email },
             {
               'is-valid': formik.touched.email && !formik.errors.email,
             }
@@ -123,7 +126,7 @@ export function Login() {
             <Link
               to='/auth/forgot-password'
               className='link-primary fs-6 fw-bolder'
-              style={{marginLeft: '5px'}}
+              style={{ marginLeft: '5px' }}
             >
               Forgot Password ?
             </Link>
@@ -164,7 +167,7 @@ export function Login() {
         >
           {!loading && <span className='indicator-label'>Continue</span>}
           {loading && (
-            <span className='indicator-progress' style={{display: 'block'}}>
+            <span className='indicator-progress' style={{ display: 'block' }}>
               Please wait...
               <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
             </span>

@@ -5,18 +5,22 @@
  * components (e.g: `src/app/modules/Auth/pages/AuthPage`, `src/app/BasePage`).
  */
 
-import React, {FC} from 'react'
+import React, {FC, useEffect} from 'react'
 import {Redirect, Switch, Route} from 'react-router-dom'
-import {shallowEqual, useSelector} from 'react-redux'
 import {MasterLayout} from '../../_metronic/layout/MasterLayout'
 import {PrivateRoutes} from './PrivateRoutes'
 import {Logout, AuthPage} from '../modules/auth'
 import {ErrorsPage} from '../modules/errors/ErrorsPage'
-// import {RootState} from '../../setup'
+import { useAppSelector } from '../../setup/redux/useRedux'
+
+
 
 const Routes: FC = () => {
-  // const isAuthorized = useSelector<RootState>(({auth}) => auth.user, shallowEqual)
-  const isAuthorized = true //TEST CODE
+  let userStorage = window.localStorage.getItem('user');
+  userStorage =JSON.parse(`${userStorage}`);  
+
+  const isAuthorized = useAppSelector(state => state.user.auth.isAuthorized) || userStorage;
+
   return (
     <Switch>
       {!isAuthorized ? (

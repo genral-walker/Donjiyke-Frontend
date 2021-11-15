@@ -72,7 +72,7 @@ const TablesWidget4: React.FC<Props> = ({className}) => {
                   <tr>
                     <td>
                       <div className='symbol symbol-50px'>
-                        <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
+                        <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
                       </div>
                     </td>
                     <td>

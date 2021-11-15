@@ -28,14 +28,12 @@ export default function setupAxios(axios: any, store: any) {
 
 
 /*
-async function getInfo() {
-  const res = await window.fetch("/your-endpoint", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${Userfront.accessToken()}`,
-    },
-  });
+token: 4|gwdemerHXCqcyicY8k8En4cd1phjJGRsnW2w6NHW
+
+let res = await axios.post('http://donjiyke-api.sqtdemo.com.ng/public/api/logout', {
+  email: 'lukmansanni60@gmail.com',
+  password: 'lukman528',
+}, { headers: { Authorization: `Bearer ${token}` } });
 */ 
 
 

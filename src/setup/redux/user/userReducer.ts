@@ -2,16 +2,11 @@ import {UserModel} from '../../../app/modules/auth/models/UserModel'
 import userActionTypes from './userActionTypes'
 import {} from './userUtils'
 
-const INITIAL_STATE = {
-  user: {
-    id: 3,
-    password: 'ewegfwef',
-    email: 'lukmansanni60@gmail.com',
-    name: 'walker',
-    mobile: '08164344955',
-    role: 'admin',
-    avatar: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS99qly0iUeHsWnxHiMsrVVrHPjFh_Wma8NzHECqmmVXGc4mTDvEuz79s7Kgjfs49cYmII&usqp=CAU',
-  } as UserModel,
+const INITIAL_STATE: UserModel = {
+  auth: {
+    accessToken: '',
+    isAuthorized: false,
+  },
 }
 
 type Action = {
@@ -19,14 +14,45 @@ type Action = {
   payload?: any
 }
 
+/*
+{
+    "user": {
+        "id": 1,
+        "name": null,
+        "mobile": null,
+        "role": "staff",
+        "email": "admin@demo.com",
+        "image_path": null,
+        "email_verified_at": null,
+        "created_at": "2021-11-03T16:59:21.000000Z",
+        "updated_at": "2021-11-03T16:59:21.000000Z"
+    },
+    "token": "3|dpOUFcBJJQ9wmMWqSqSNT1Vycb4yuDHX1UR2ybUk"
+}
+*/
+
 const userReducer = (state = INITIAL_STATE, {type, payload}: Action) => {
   switch (type) {
-    case userActionTypes.CART_ADDED:
-      return {
-        ...state,
-      }
+    case userActionTypes.USER_LOGGED_IN:
+      const payloadData = {
+        ...payload.user,
+        avater: payload.image_path,
+        auth: {
+          accessToken: payload.token,
+          isAuthorized: true,
+        },
+      };
+      window.localStorage.setItem('user', JSON.stringify(payloadData));
+      
+      return payloadData;
+
+    case userActionTypes.USER_LOGGED_OUT:
+      state = INITIAL_STATE;
+      window.localStorage.clear();
+      return state;
 
     default:
+      state = INITIAL_STATE;
       return state
   }
 }

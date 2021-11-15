@@ -9,6 +9,8 @@ import {
   SalesTable
 } from '../../../_metronic/partials/widgets'
 
+
+
 const DashboardPage: FC = () => (
   <>
     {/* begin::Row */}

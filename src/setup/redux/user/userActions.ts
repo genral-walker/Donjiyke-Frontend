@@ -1,7 +1,11 @@
 
 import userActionTypes from './userActionTypes'
 
-// export const addToCart = productID => ({
-//     type: userActionTypes.CART_ADDED,
-//     payload: productID
-// });
+export const loginIn = (user: object) => ({
+    type: userActionTypes.USER_LOGGED_IN,
+    payload: user
+});
+
+export const logOut = () => ({
+    type: userActionTypes.USER_LOGGED_OUT,
+});

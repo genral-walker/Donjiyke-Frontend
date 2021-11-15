@@ -87,7 +87,7 @@ const FeedsWidget3: React.FC<Props> = ({className}) => {
           <div className='d-flex mb-5'>
             {/* begin::Avatar */}
             <div className='symbol symbol-45px me-5'>
-              <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
+              <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
             </div>
             {/* end::Avatar */}
 

@@ -1,16 +1,67 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
+import axios from 'axios'
+import React, {useState, useEffect} from 'react'
 import { useHistory, useLocation } from 'react-router'
+import { useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 
 type Props = {
-  className: string
+  className: string,
+  datum?: any  
 }
 
-const TablesWidget13: React.FC<Props> = ({ className }) => {
+const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
 
-  const location = useLocation();
+ const [stock, setStock] = useState([]);
+
+ const location = useLocation();
  const history = useHistory();
+
+ const user = useAppSelector(state => state.user);
+
+ let userStorage: any = window.localStorage.getItem('user');
+ userStorage = JSON.parse(`${userStorage}`);
+
+ const userToken = useAppSelector(state => state?.user?.auth?.accessToken) || userStorage?.auth?.accessToken;
+
+ const fetchStocks = async () => {
+
+   const config = {
+     headers: { Authorization: `Bearer ${userToken}` }
+   }
+
+   try {
+     let res = await axios.get('http://localhost:8000/api/stocks', config);
+
+     if (res) {
+
+       window.localStorage.setItem('stocks', JSON.stringify(res.data))
+       setStock(res.data);
+     }
+
+   } catch (error: any) {      
+     alert(error.message ?? error)
+   }
+ }
+
+
+ useEffect(() => {
+  fetchStocks();
+ }, []);
+
+
+ useEffect(() => {
+   
+    let stocksStorage: any = window.localStorage.getItem('stocks');
+    stocksStorage =JSON.parse(`${stocksStorage}`); 
+   if (stocksStorage && stock.length === 0) {
+     setStock(stocksStorage)
+   }
+  }, []);
+
+  useEffect(() => {
+   setStock(datum)
+  }, [datum]);
 
   return (
     <div className={`card ${className}`}>
@@ -60,64 +111,73 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
             {/* end::Table head */}
             {/* begin::Table body */}
             <tbody>
-              <tr>
+              { stock ?
+                stock?.map((data: any) => {
 
-                <td>
-                  <span className='text-dark fw-bolder fs-6'>
-                    05/28/2020
-                  </span>
-                </td>
-                <td>
-                  <span className='text-dark fw-bolder fs-6'>
-                    439 kg
-                  </span>
-                </td>
-                <td>
-                  <span className='text-dark fw-bolder fs-6'>
-                    3627 mtr
-                  </span>
+                  return (
+                    <tr>
 
-                </td>
-                <td>
-                  <span className='text-dark fw-bolder fs-6'>
-                    05/28/2020
-                  </span>
-                </td>
-                <td className='text-dark fw-bolder fs-6'>350 mtr</td>
-                <td>
-                  <div className='d-flex align-items-center' style={{ pointerEvents: 'none' }}>
-                    <div className='symbol symbol-30px me-3'>
-                      <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
-                    </div>
-                    <div className='d-flex justify-content-start flex-column'>
-                      <a href='#' className='text-dark fw-bolder fs-6'>
-                        Ana Simmons
-                      </a>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <span className='text-dark fw-bolder fs-6'>Issued from the house of the people</span>
-                </td>
-                <td>
-                  <span className='text-dark fw-bolder fs-6'>
-                  ₦323,710
-                  </span>
-                </td>
-                <td className='text-end'>
-                  {/* <a
-                   href='#'
-                   className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                 >
-                   <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                 </a>
-                 <a href='#' className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'>
-                   <KTSVG path='/media/icons/duotune/general/gen027.svg' className='svg-icon-3' />
-                 </a> */}
-                  <span className='text-dark fw-bolder fs-6'>Balance data</span>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        {data.created_at}
+                      </span>
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        {data.kg} kg
+                      </span>
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        {data.metre_run} mtr
+                      </span>
+    
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        {data.updated_at}
+                      </span>
+                    </td>
+                    <td className='text-dark fw-bolder fs-6'>{data.metre_out} mtr</td>
+                    <td>
+                      <div className='d-flex align-items-center' style={{ pointerEvents: 'none' }}>
+                        <div className='symbol symbol-30px me-3'>
+                          <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
+                        </div>
+                        <div className='d-flex justify-content-start flex-column'>
+                          <a href='#' className='text-dark fw-bolder fs-6'>
+                            {data.issued_by}
+                          </a>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>{data.issued_to}</span>
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                      ₦{data.cost}
+                      </span>
+                    </td>
+                    <td className='text-end'>
+                      {/* <a
+                       href='#'
+                       className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                     >
+                       <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
+                     </a>
+                     <a href='#' className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'>
+                       <KTSVG path='/media/icons/duotune/general/gen027.svg' className='svg-icon-3' />
+                     </a> */}
+                      <span className='text-dark fw-bolder fs-6'>{data.balance}</span>
+    
+                    </td>
+                  </tr>
+                )
+                }) :
 
-                </td>
-              </tr>
+                <tr><h2 style={{ margin: '1rem auto', width: '200px' }}>No Stocks Data</h2></tr>        
+              }
             </tbody>
             {/* end::Table body */}
           </table>
