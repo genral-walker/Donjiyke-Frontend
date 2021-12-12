@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
+import { addSales } from '../../../../setup/redux/reducers/sales'
 // import { saveSales } from '../../../../setup/redux/sales/salesActions'
 import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
@@ -9,35 +10,30 @@ import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 // SALES COMPONENT    
 
 type Props = {
-  className: string,
-  datum?: any
+  className: string
 }
 
-const SalesTable: React.FC<Props> = ({ className, datum }) => {
-
-  const [sale, setsale] = useState([]);
+const SalesTable: React.FC<Props> = ({ className }) => {
 
   const location = useLocation();
   const history = useHistory();
 
-  const user = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
+  const sales = useAppSelector(state => state.sales);
 
-  let userStorage: any = window.localStorage.getItem('user');
-  userStorage = JSON.parse(`${userStorage}`);
 
-  const fetchSales = async () => {
+ const fetchSales = async () => {
 
     try {
       let res = await http.get('/sales');
 
       if (res) {
-
-        window.localStorage.setItem('sales', JSON.stringify(res.data))
-        setsale(res.data);
+        dispatch(addSales(res.data))
       }
 
     } catch (error: any) {
-      alert(error.message ?? error)
+      console.log(error.message ?? error)
+      alert('Network error loading sales data. Please refresh the page.')  
     }
   }
 
@@ -45,20 +41,6 @@ const SalesTable: React.FC<Props> = ({ className, datum }) => {
   useEffect(() => {
     fetchSales();
   }, []);
-
-
-  useEffect(() => {
-
-    let salesStorage: any = window.localStorage.getItem('sales');
-    salesStorage = JSON.parse(`${salesStorage}`);
-    if (salesStorage && sale.length === 0) {
-      setsale(salesStorage)
-    }
-  }, []);
-
-  useEffect(() => {
-    setsale(datum)
-  }, [datum]);
 
 
   return (
@@ -108,8 +90,8 @@ const SalesTable: React.FC<Props> = ({ className, datum }) => {
             {/* end::Table head */}
             {/* begin::Table body */}
             <tbody>
-              {sale ?
-                sale?.map((data: any) => {
+              {sales ?
+                sales?.map((data: any) => {
                   /*
                   {
                           "id": 1,
@@ -186,7 +168,7 @@ const SalesTable: React.FC<Props> = ({ className, datum }) => {
       </div>
       {/* begin::Body */}
     </div>
-  )
+  )   
 }
 
 export { SalesTable }

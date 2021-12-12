@@ -1,19 +1,17 @@
 
 const actionTypes = {
   LOAD_SALES: 'LOAD_SALES',
-  SAVE_SALES: 'SAVE_SALES',
+  SALES_ADDED: 'SALES_ADDED',
 };
 
-export const saveSales = (data: any) => ({
-  type: actionTypes.LOAD_SALES,
+export const addSales = (data: any) => ({
+  type: actionTypes.SALES_ADDED,
   payload: data
 });
 
 export const loadSales = () => ({
-  type: actionTypes.SAVE_SALES,
+  type: actionTypes.LOAD_SALES,
 });
-
-
 
 
 const INITIAL_STATE: any = []
@@ -25,9 +23,8 @@ type Action = {
 
 const salesReducer = (state = INITIAL_STATE, { type, payload }: Action) => {
   switch (type) {
-    case actionTypes.SAVE_SALES:
-      console.log(type, payload);
-      return [...state, ...payload]
+    case actionTypes.SALES_ADDED:
+      return [...payload]    
 
     default:
       return state

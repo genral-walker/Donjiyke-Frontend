@@ -1,59 +1,46 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 // STOCKS COMPONENT 
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
-import http, { useAppSelector } from '../../../../setup/redux/useRedux'
+import { addStock } from '../../../../setup/redux/reducers/stocks'
+import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 
+
 type Props = {
-  className: string,
-  datum?: any  
+  className: string
 }
 
-const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
+const TablesWidget13: React.FC<Props> = ({ className }) => {
 
- const [stock, setStock] = useState([]);
+  const dispatch = useAppDispatch()
+  const stocks = useAppSelector(state => state.stocks)
 
- const location = useLocation();
- const history = useHistory();
-
- const user = useAppSelector(state => state.user);
-
-
- const fetchStocks = async () => {
-
-   try {
-     let res = await http.get('/stocks');
-
-     if (res) {
-
-       window.localStorage.setItem('stocks', JSON.stringify(res.data))
-       setStock(res.data);
-     }
-
-   } catch (error: any) {      
-     alert(error.message ?? error)
-   }
- }
+  const location = useLocation();
+  const history = useHistory();
 
 
- useEffect(() => {
-  fetchStocks();
- }, []);
+  const fetchStocks = async () => {
 
+    try {
+      let res = await http.get('/stocks');
 
- useEffect(() => {
-   
-    let stocksStorage: any = window.localStorage.getItem('stocks');
-    stocksStorage =JSON.parse(`${stocksStorage}`); 
-   if (stocksStorage && stock?.length === 0) {
-     setStock(stocksStorage)
-   }
-  }, []);
+      if (res) {
+        dispatch(addStock(res.data))
+      }
+
+    } catch (error: any) {
+      console.log(error);
+      alert('Network error loading stocks data. please refresh the page.')
+    }
+  }
+
 
   useEffect(() => {
-   setStock(datum)
-  }, [datum]);
+    fetchStocks();
+  }, []);
+
+
 
   return (
     <div className={`card ${className}`}>
@@ -72,9 +59,9 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
         >
           {
             location.pathname === '/dashboard' &&
-              <button className='btn btn-sm btn-primary' onClick={()=>history.push('/crafted/pages/stocks')}>
-                View All
-              </button> 
+            <button className='btn btn-sm btn-primary' onClick={() => history.push('/crafted/pages/stocks')}>
+              View All
+            </button>
           }
 
         </div>
@@ -93,7 +80,7 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
                 <th className='min-w-120px'>Date In</th>
                 <th className='min-w-120px'>kg</th>
                 <th className='min-w-120px'>Metre Run</th>
-                <th className='min-w-120px'>Balance</th>   
+                <th className='min-w-120px'>Balance</th>
 
                 {/* <th className='min-w-120px'>Date Out</th>
                 <th className='min-w-100px'>Metre Out</th>
@@ -106,40 +93,40 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
             {/* end::Table head */}
             {/* begin::Table body */}
             <tbody>
-              { stock ?
-                stock?.map((data: any) => {
+              {stocks ?
+                stocks?.map((data: any) => {
 
                   return (
                     <tr>
                       <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                       Row {data.id}
-                      </span>
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        {data.created_at}
-                      </span>
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        {data.kg} kg
-                      </span>
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        {data.metre_run} mtr
-                      </span>
-    
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        {data.balance} mtr
-                      </span>
-    
-                    </td>
-                    
-                    {/* <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          Row {data.id}
+                        </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.created_at}
+                        </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.kg} kg
+                        </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.metre_run} mtr
+                        </span>
+
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.balance} mtr
+                        </span>
+
+                      </td>
+
+                      {/* <td>
                       <span className='text-dark fw-bolder fs-6'>
                         {data.updated_at}
                       </span>
@@ -178,10 +165,10 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
                       <span className='text-dark fw-bolder fs-6'>{data.balance}</span>
     
                     </td> */}
-                  </tr>
-                )     
-                }) :    
-                <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Stocks Data</h3></td></tr>        
+                    </tr>
+                  )
+                }) :
+                <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Stocks Data</h3></td></tr>
               }
             </tbody>
             {/* end::Table body */}

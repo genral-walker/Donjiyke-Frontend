@@ -1,10 +1,15 @@
-import React, { Suspense, lazy } from 'react'
-import { Redirect, Route, Switch } from 'react-router-dom'   
+import React, { Suspense, lazy, useEffect } from 'react'
+import { Redirect, Route, Switch } from 'react-router-dom'
+import http, { useAppDispatch, useAppSelector } from '../../setup/redux/useRedux'
 import { FallbackView } from '../../_metronic/partials'
 import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper'
 import { MenuTestPage } from '../pages/MenuTestPage'
 
 export function PrivateRoutes() {
+
+  const user = useAppSelector(state => state.user);
+  const dispatch = useAppDispatch();
+
   const BuilderPageWrapper = lazy(() => import('../pages/layout-builder/BuilderPageWrapper'))
   const ProfilePage = lazy(() => import('../modules/profile/ProfilePage'))
   const WizardsPage = lazy(() => import('../modules/wizards/WizardsPage'))
@@ -13,6 +18,39 @@ export function PrivateRoutes() {
   const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
   const StocksPage = lazy(() => import('../modules/stocks/StocksPage'))
   const SalesPage = lazy(() => import('../modules/sales/SalesPage'))
+
+  const fetchUIs = async () => {
+    let data: {};
+
+    try {
+      if (user.role === 'admin') {
+        const res = await Promise.all([
+          http.get('/sales'),
+          http.get('/stocks'),
+          http.get('/users')
+        ]);
+
+        data = { sales: res[0].data, stocks: res[1].data, users: res[2].data };
+
+      } else {
+
+        const res = await Promise.all([
+          http.get('/sales'),
+          http.get('/stocks')
+        ]);
+
+        data = { sales: res[0].data, stocks: res[1].data };
+      }
+      
+    } catch (err) {
+      console.log(err)
+      alert('Error loading page data. Please reload the page.')
+    }
+  };
+
+  useEffect(() => {
+    fetchUIs()
+  }, [])
 
 
   return (

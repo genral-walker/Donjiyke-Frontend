@@ -1,8 +1,9 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
 import { KTSVG } from '../../../_metronic/helpers'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import { TablesWidget13 } from '../../../_metronic/partials/widgets'
-import http, { useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
+import http, { useAppDispatch } from '../../../setup/redux/useRedux'
+import { addStock } from '../../../setup/redux/reducers/stocks'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -22,70 +23,61 @@ const accountBreadCrumbs: Array<PageLink> = [
 /*
 Add New Stock
 STOCKS PAGE
-*/ 
+*/
 const StocksPage: React.FC = () => {
 
-  const [stock, setStock] = useState<any>();
+  const dispatch = useAppDispatch();
 
-  let userStorage: any = window.localStorage.getItem('user');
-  userStorage = JSON.parse(`${userStorage}`);
-  
-  let user = useAppSelector(state => state.user);
+  const submitStock = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {
+    evt.preventDefault();
 
-  user = user.email? user : userStorage;
+    try {
+      let res: any = await http.post('/stocks', {
+        kg: (document.getElementById('kg') as HTMLInputElement).value,
+        metre_run: (document.getElementById('metre-run') as HTMLInputElement).value,
+        balance: (document.getElementById('metre-run') as HTMLInputElement).value, //if mutated balance then use mutated balance esle use metre-run's value
+      });
 
-
-  const submitStock = async (evt: React.FormEventHandler<HTMLFormElement> | any)=> {
-  evt.preventDefault(); 
-  
-  try {
-    let res: any = await http.post('/stocks', {
-      kg: (document.getElementById('kg') as HTMLInputElement).value,     
-      metre_run: (document.getElementById('metre-run') as HTMLInputElement).value,    
-      balance: (document.getElementById('metre-run') as HTMLInputElement).value,
-    });
-
-    if (res) {
-      alert('Stock created successfully!!')
-      evt.target.reset();   
+      if (res) {
+        alert('Stock created successfully!!')
+        evt.target.reset();
 
 
-      try {
-        let stocks = await http.get('/stocks');            
-  
-        if (stocks) {
-          setStock(stocks.data)
-          window.localStorage.setItem('stocks', JSON.stringify(stocks.data))
+        try {
+          let stocks = await http.get('/stocks');
+
+          if (stocks) {
+            dispatch(addStock(stocks.data))
+          }
+
+        } catch (error: any) {
+          console.log(error.message ?? error);
+          alert('Network error, please try again.')
         }
-  
-      } catch (error: any) {      
-        console.log(error.message ?? error);
-        alert(error.message ?? error)
+
       }
-      
-    }      
 
-  } catch (error: any) {    
-    console.log(error.message ?? error)  
-    alert(error.message ?? error)
+    } catch (error: any) {
+      console.log(error.message ?? error);
+      alert('Network error, please try again.')
+    }
+
+
   }
-
-
-}
 
 
   return (
     <>
       <PageTitle breadcrumbs={accountBreadCrumbs}>Stocks Page</PageTitle>
       <div className='row gy-5 g-xl-8'>
-        <TablesWidget13 datum={stock}
+        <TablesWidget13
           className='card-xxl-stretch-50 mb-14 mb-xl-18'
         />
 
         {/* MODAL */}
 
         <button type="button"
-          className="btn btn-primary"   
+          className="btn btn-primary"
           data-bs-toggle="modal"
           data-bs-target="#kt_modal_1"
         >
@@ -95,24 +87,24 @@ const StocksPage: React.FC = () => {
 
           <form onSubmit={submitStock}>
             <div className="modal-dialog" style={{ maxWidth: '500px' }}>
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Add New Stock</h5>
-                <div
-                  className="btn btn-icon btn-sm btn-active-light-primary ms-2"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <KTSVG
-                    path="/media/icons/duotune/arrows/arr061.svg"
-                    className="svg-icon svg-icon-2x"
-                  />
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Add New Stock</h5>
+                  <div
+                    className="btn btn-icon btn-sm btn-active-light-primary ms-2"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <KTSVG
+                      path="/media/icons/duotune/arrows/arr061.svg"
+                      className="svg-icon svg-icon-2x"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="modal-body">
+                <div className="modal-body">
 
-                {/* <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                  {/* <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                   <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                     <span className="required">Target Title</span>
                     <i className="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Specify a target name for future usage and reference" aria-label="Specify a target name for future usage and reference"></i>
@@ -122,27 +114,27 @@ const StocksPage: React.FC = () => {
                   <div className ="fv-plugins-message-container invalid-feedback"></div>
                   </div> */}
 
-                <div className="row g-9 mb-8">
-                  <div className="col-md-6 fv-row">
-                    <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                      <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Kg</span>
-                      </label>
-                      <input type="number" id="kg" required className="form-control form-control-solid" placeholder="Enter Kg" />
+                  <div className="row g-9 mb-8">
+                    <div className="col-md-6 fv-row">
+                      <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                          <span className="required">Kg</span>
+                        </label>
+                        <input type="number" id="kg" required className="form-control form-control-solid" placeholder="Enter Kg" />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="col-md-6 fv-row">
-                    <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                      <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Metre Run</span>
-                      </label>
+                    <div className="col-md-6 fv-row">
+                      <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                          <span className="required">Metre Run</span>
+                        </label>
 
-                      <input type="number" id="metre-run" required className="form-control form-control-solid" placeholder="Enter Metre Run" />
+                        <input type="number" id="metre-run" required className="form-control form-control-solid" placeholder="Enter Metre Run" />
+                      </div>
                     </div>
-                  </div>
-                  
-                  {/* <div className="col-md-3 fv-row">
+
+                    {/* <div className="col-md-3 fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                         <span className="required">Metre Out</span>
@@ -160,9 +152,9 @@ const StocksPage: React.FC = () => {
                       <input type="number" id="cost" required className="form-control form-control-solid" placeholder="Enter Cost" />
                     </div>
                   </div> */}
-                </div>
+                  </div>
 
-                {/* <div className="row g-9 mb-8">
+                  {/* <div className="row g-9 mb-8">
                   <div className="col-md-6 fv-row">
                   <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
@@ -181,22 +173,22 @@ const StocksPage: React.FC = () => {
                   </div>
                   </div> */}
 
-              </div>
+                </div>
 
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-light"
-                  data-bs-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Submit
-                </button>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-light"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    Submit
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
           </form>
         </div>
       </div>

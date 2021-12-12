@@ -1,14 +1,16 @@
 <!-- 
-TRYING TO MAKE THE USER SAVED BACK TO REDUX FROM LOCAL STORAGE IF THEY HAVEN"T LOGGED OUT
- -->
+CLEAR ALL API CALLS ON RENDER FOR USERS< STOCKS AND SALES>. THEN SET THE APPROPRAITE DISPATCH.        
+Chnaging the state to use redux, for sales ands stocks instead to localstorage.
+TRYING TO implement sales automatically deducting from active stock.   
+- set loaders whenevr users aee submitting inputs... stocks, sales, profile, users.
+ -->   
 
 # Getting Started with Create React App
 
  - user must set name before they can fill the form
  - work on changing endpoints when hosted:
- 
-    ## Endpoints
-    - Login Component  
+ - prevent calling api of state didn't change.
+
 
 ## New flow
 - ### STOCKS/Rolls

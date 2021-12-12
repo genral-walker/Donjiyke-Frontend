@@ -1,73 +1,76 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react'
-import { useHistory, useLocation } from 'react-router'
-import http, { useAppSelector } from '../../../../setup/redux/useRedux';
+import { useLocation } from 'react-router'
+import { addUser } from '../../../../setup/redux/reducers/users';
+import http, { useAppSelector, useAppDispatch } from '../../../../setup/redux/useRedux';
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 
 type Props = {
   className: string
 }
 
+// USERS COMPONENT
+
 const TablesWidget10: React.FC<Props> = ({ className }) => {
+
+  const dispatch = useAppDispatch();
+  const users = useAppSelector(state => state.users);
+  const user = useAppSelector(state => state.user);
+
   const location = useLocation();
-  const history = useHistory();
-
-  const [userData, setUserData] = useState<any>();
-  const [userAdded, setUserAdded] = useState<number>(0);
-
-  let userStorage: any = window.localStorage.getItem('user');
-  userStorage = JSON.parse(`${userStorage}`);
-
-  let user = useAppSelector(state => state.user);
-  user = user.email ? user : userStorage;
-
-
-  let userListsData: any = window.localStorage.getItem('userLists');
-  userListsData = JSON.parse(`${userListsData}`);
 
   // const isCreated = userListsData.email && userListsData;
 
 
-  const randomPass = (count: number)=> {
+  const randomPass = (count: number) => {
     const letter = "0123456789ABCDEFGHIJabcdefghijklmnopqrstuvwxyzKLMNOPQRSTUVWXYZ0123456789abcdefghiABCDEFGHIJKLMNOPQRST0123456789jklmnopqrstuvwxyz";
     let randomString = "";
     for (let i = 0; i <= count; i++) {
-        const randomStringNumber = Math.floor(1 + Math.random() * (letter.length - 1));
-        randomString += letter.substring(randomStringNumber, randomStringNumber + 1);
+      const randomStringNumber = Math.floor(1 + Math.random() * (letter.length - 1));
+      randomString += letter.substring(randomStringNumber, randomStringNumber + 1);
     }
     return (document.getElementById('password') as HTMLInputElement).value = randomString;
-}
+  }
+     
 
-const editUser =(evt: React.MouseEventHandler<HTMLAnchorElement> | any)=> {
-  console.log(evt.target);
-if (evt.target.id === 'edit-user') {
-  console.log('eddiiiiitttt')
-} else if (evt.target.id === 'delete-user"') {
-  console.log('deleteeee')
-}
-};
+  const editUser = (id: any) => {
+  return console.log(id, ' :ID');   
+    // if (evt.target.id === 'edit-user') {
+    //   console.log('eddiiiiitttt')
+    // } else if (evt.target.id === 'delete-user"') {
+    //   console.log('deleteeee')
+    // }
+  };
+
+  const deleteUser = (evt: React.MouseEventHandler<HTMLAnchorElement> | any) => {
+    // console.log(evt.target);
+    // if (evt.target.id === 'edit-user') {
+    //   console.log('eddiiiiitttt')
+    // } else if (evt.target.id === 'delete-user"') {
+    //   console.log('deleteeee')
+    // }    
+  };
+
 
   const fetchUsers = async () => {
     try {
       let res = await http.get('/users');
-
       if (res) {
-
-        window.localStorage.setItem('userLists', JSON.stringify(res.data))
-        setUserData(res.data);
+        dispatch(addUser(res.data))
       }
 
     } catch (error: any) {
-      alert(error.message ?? error)
+      console.log(error.message ?? error);
+      alert('Network error loading users, please reload the page.')      
     }
   }
 
   const createUSer = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {
-    evt.preventDefault(); 
+    evt.preventDefault();
     evt.target.style.pointerEvents = 'none';
-  
+
     try {
-      let res: any = await http.post('/create', {  
+      let res: any = await http.post('/create', {
         email: `${(document.getElementById('email') as HTMLInputElement).value}`,
         password: `${(document.getElementById('password') as HTMLInputElement).value}`
       });
@@ -77,28 +80,16 @@ if (evt.target.id === 'edit-user') {
         evt.target.reset();
         evt.target.style.pointerEvents = 'all';
         fetchUsers();
-        setUserAdded(state => state + 1)
       }
 
     } catch (error: any) {
-      alert(error.message ?? error);
-      evt.target.style.pointerEvents = 'all';
+      console.log(error.message ?? error);
+      alert('Error creating user, please try again.');
+      evt.target.style.pointerEvents = 'all';   
     }
   }
 
-  useEffect(() => {
-    if (user.role === 'admin') {
-      fetchUsers()
-    };
-  }, [])
-
-  useEffect(() => {
-    if (user.role === 'admin') {
-      setUserData(userListsData);
-    };
-  }, [userAdded])
-
-  return (
+  return ( 
     <div className={`card ${className}`} style={{ display: user.role === 'admin' ? 'unset' : 'none' }}>
       {/* begin::Header */}
       <div className='card-header border-0 pt-5'>
@@ -148,7 +139,7 @@ if (evt.target.id === 'edit-user') {
             <tbody>
 
 
-              {userData && userData.map((data: any) => {
+              {users && users.map((data: any) => {
                 return (
                   <tr key={data.id} id={data.id} onClick={editUser}>
                     <td>
@@ -177,18 +168,20 @@ if (evt.target.id === 'edit-user') {
                     <td>
                       <div className='d-flex justify-content-end flex-shrink-0'>
                         <a
-                         
+
                           className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
                           id="edit-user"
-                          // 
+                          onClick={()=> editUser(data.id)}
+                        // 
                         >
                           <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
                         </a>
                         <a
-                         
+
                           className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
                           id="delete-user"
-                          
+                          onClick={deleteUser}
+
                         >
                           <KTSVG
                             path='/media/icons/duotune/general/gen027.svg'
@@ -212,7 +205,7 @@ if (evt.target.id === 'edit-user') {
       <div className="modal fade" tabIndex={-1} id="kt_modal_1">
 
         <form onSubmit={createUSer}>
-          <div className="modal-dialog" style={{ maxWidth: '500px' }}>  
+          <div className="modal-dialog" style={{ maxWidth: '500px' }}>
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Add New User</h5>
@@ -230,7 +223,7 @@ if (evt.target.id === 'edit-user') {
 
               <div className="modal-body">
 
-                
+
                 <div className="fv-row">
                   <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                     <label className="d-flex align-items-center fs-6 fw-bold mb-2">
@@ -243,10 +236,10 @@ if (evt.target.id === 'edit-user') {
                 <div className="fv-row">
                   <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                     <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                      
-                      <button type="button" className="btn btn-secondary" onClick={() =>randomPass(15)}>
-                      <span className="required">Generate Password</span>
-                </button>
+
+                      <button type="button" className="btn btn-secondary" onClick={() => randomPass(15)}>
+                        <span className="required">Generate Password</span>
+                      </button>
                     </label>
 
                     <input type="text" id="password" required className="form-control form-control-solid mt-2" placeholder="Enter Password" />

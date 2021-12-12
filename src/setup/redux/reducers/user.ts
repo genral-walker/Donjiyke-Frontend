@@ -3,7 +3,7 @@ import { UserModel } from '../../../app/modules/auth/models/UserModel'
 const actionTypes = {
   USER_LOGGED_IN: 'USER_LOGGED_IN',
   USER_LOGGED_OUT: 'USER_LOGGED_OUT',
-};
+};   
 
 export const loginIn = (user: object) => ({
   type: actionTypes.USER_LOGGED_IN,
