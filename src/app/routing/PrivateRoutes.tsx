@@ -1,8 +1,8 @@
-import React, {Suspense, lazy} from 'react'
-import {Redirect, Route, Switch} from 'react-router-dom'
-import {FallbackView} from '../../_metronic/partials'
-import {DashboardWrapper} from '../pages/dashboard/DashboardWrapper'
-import {MenuTestPage} from '../pages/MenuTestPage'
+import React, { Suspense, lazy } from 'react'
+import { Redirect, Route, Switch } from 'react-router-dom'   
+import { FallbackView } from '../../_metronic/partials'
+import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper'
+import { MenuTestPage } from '../pages/MenuTestPage'
 
 export function PrivateRoutes() {
   const BuilderPageWrapper = lazy(() => import('../pages/layout-builder/BuilderPageWrapper'))
@@ -11,8 +11,9 @@ export function PrivateRoutes() {
   const AccountPage = lazy(() => import('../modules/accounts/AccountPage'))
   const WidgetsPage = lazy(() => import('../modules/widgets/WidgetsPage'))
   const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
-  const StocksPage = lazy(() => import('../modules/stocks/StocksPage'))      
+  const StocksPage = lazy(() => import('../modules/stocks/StocksPage'))
   const SalesPage = lazy(() => import('../modules/sales/SalesPage'))
+
 
   return (
     <Suspense fallback={<FallbackView />}>

@@ -1,14 +1,105 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React from 'react'
-import {KTSVG, toAbsoluteUrl} from '../../../helpers'
+import React, { useEffect, useState } from 'react'
+import { useHistory, useLocation } from 'react-router'
+import http, { useAppSelector } from '../../../../setup/redux/useRedux';
+import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 
 type Props = {
   className: string
 }
 
-const TablesWidget10: React.FC<Props> = ({className}) => {
+const TablesWidget10: React.FC<Props> = ({ className }) => {
+  const location = useLocation();
+  const history = useHistory();
+
+  const [userData, setUserData] = useState<any>();
+  const [userAdded, setUserAdded] = useState<number>(0);
+
+  let userStorage: any = window.localStorage.getItem('user');
+  userStorage = JSON.parse(`${userStorage}`);
+
+  let user = useAppSelector(state => state.user);
+  user = user.email ? user : userStorage;
+
+
+  let userListsData: any = window.localStorage.getItem('userLists');
+  userListsData = JSON.parse(`${userListsData}`);
+
+  // const isCreated = userListsData.email && userListsData;
+
+
+  const randomPass = (count: number)=> {
+    const letter = "0123456789ABCDEFGHIJabcdefghijklmnopqrstuvwxyzKLMNOPQRSTUVWXYZ0123456789abcdefghiABCDEFGHIJKLMNOPQRST0123456789jklmnopqrstuvwxyz";
+    let randomString = "";
+    for (let i = 0; i <= count; i++) {
+        const randomStringNumber = Math.floor(1 + Math.random() * (letter.length - 1));
+        randomString += letter.substring(randomStringNumber, randomStringNumber + 1);
+    }
+    return (document.getElementById('password') as HTMLInputElement).value = randomString;
+}
+
+const editUser =(evt: React.MouseEventHandler<HTMLAnchorElement> | any)=> {
+  console.log(evt.target);
+if (evt.target.id === 'edit-user') {
+  console.log('eddiiiiitttt')
+} else if (evt.target.id === 'delete-user"') {
+  console.log('deleteeee')
+}
+};
+
+  const fetchUsers = async () => {
+    try {
+      let res = await http.get('/users');
+
+      if (res) {
+
+        window.localStorage.setItem('userLists', JSON.stringify(res.data))
+        setUserData(res.data);
+      }
+
+    } catch (error: any) {
+      alert(error.message ?? error)
+    }
+  }
+
+  const createUSer = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {
+    evt.preventDefault(); 
+    evt.target.style.pointerEvents = 'none';
+  
+    try {
+      let res: any = await http.post('/create', {  
+        email: `${(document.getElementById('email') as HTMLInputElement).value}`,
+        password: `${(document.getElementById('password') as HTMLInputElement).value}`
+      });
+
+      if (res) {
+        alert('User created successfully!!')
+        evt.target.reset();
+        evt.target.style.pointerEvents = 'all';
+        fetchUsers();
+        setUserAdded(state => state + 1)
+      }
+
+    } catch (error: any) {
+      alert(error.message ?? error);
+      evt.target.style.pointerEvents = 'all';
+    }
+  }
+
+  useEffect(() => {
+    if (user.role === 'admin') {
+      fetchUsers()
+    };
+  }, [])
+
+  useEffect(() => {
+    if (user.role === 'admin') {
+      setUserData(userListsData);
+    };
+  }, [userAdded])
+
   return (
-    <div className={`card ${className}`}>
+    <div className={`card ${className}`} style={{ display: user.role === 'admin' ? 'unset' : 'none' }}>
       {/* begin::Header */}
       <div className='card-header border-0 pt-5'>
         <h3 className='card-title align-items-start flex-column'>
@@ -21,15 +112,20 @@ const TablesWidget10: React.FC<Props> = ({className}) => {
           data-bs-trigger='hover'
           title='Click to add a user'
         >
-          <a
-            href='#'
-            className='btn btn-sm btn-light-primary'
-            // data-bs-toggle='modal'
-            // data-bs-target='#kt_modal_invite_friends'
-          >
-            <KTSVG path='media/icons/duotune/arrows/arr075.svg' className='svg-icon-3' />
-            Add New
-          </a>
+
+          {
+            location.pathname === '/crafted/account' ?
+              <a
+                href='#'
+                className='btn btn-sm btn-light-primary'
+                data-bs-toggle="modal"
+                data-bs-target="#kt_modal_1"
+
+              >
+                <KTSVG path='media/icons/duotune/arrows/arr075.svg' className='svg-icon-3' />
+                Add New
+              </a> : ''
+          }
         </div>
       </div>
       {/* end::Header */}
@@ -44,263 +140,66 @@ const TablesWidget10: React.FC<Props> = ({className}) => {
               <tr className='fw-bolder text-muted'>
                 <th className='min-w-150px'>Accounts</th>
                 <th className='min-w-140px'>Info</th>
-                <th className='min-w-120px'>Password</th>
                 <th className='min-w-100px text-end'>Actions</th>
               </tr>
             </thead>
             {/* end::Table head */}
             {/* begin::Table body */}
             <tbody>
-              <tr>
-                <td>
-                  <div className='d-flex align-items-center'>
-                    <div className='symbol symbol-45px me-5'>
-                      <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
-                    </div>
-                    <div className='d-flex justify-content-start flex-column'>
-                      <a href='#' className='text-dark fw-bolder text-hover-primary fs-6'>
-                        Ana Simmons
-                      </a>
-                      <span className='text-muted fw-bold text-muted d-block fs-7'>
-                        STAFF
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <a href='#' className='text-dark fw-bolder text-hover-primary d-block fs-6'>
-                  admin@demo.com
-                  </a>
-                  <span className='text-muted fw-bold text-muted d-block fs-7'>
-                   08163726422
-                  </span>
-                </td>
-                <td className='text-end'>
-                <div className='form-check form-check-sm form-check-custom form-check-solid'>
-                    <input className='form-text-input form-control form-control-md form-control-solid ' type='text' />
-                  </div>
-                </td>
-                <td>
-                  <div className='d-flex justify-content-end flex-shrink-0'>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                    >
-                      <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                    </a>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
-                    >
-                      <KTSVG
-                        path='/media/icons/duotune/general/gen027.svg'
-                        className='svg-icon-3'
-                      />
-                    </a>
-                  </div>
-                </td>
-              </tr>
 
-              <tr>
-                <td>
-                  <div className='d-flex align-items-center'>
-                    <div className='symbol symbol-45px me-5'>
-                      <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
-                    </div>
-                    <div className='d-flex justify-content-start flex-column'>
-                      <a href='#' className='text-dark fw-bolder text-hover-primary fs-6'>
-                        Ana Simmons
-                      </a>
-                      <span className='text-muted fw-bold text-muted d-block fs-7'>
-                        STAFF
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <a href='#' className='text-dark fw-bolder text-hover-primary d-block fs-6'>
-                  admin@demo.com
-                  </a>
-                  <span className='text-muted fw-bold text-muted d-block fs-7'>
-                   08163726422
-                  </span>
-                </td>
-                <td className='text-end'>
-                <div className='form-check form-check-sm form-check-custom form-check-solid'>
-                    <input className='form-text-input form-control form-control-md form-control-solid ' type='text' />
-                  </div>
-                </td>
-                <td>
-                  <div className='d-flex justify-content-end flex-shrink-0'>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                    >
-                      <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                    </a>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
-                    >
-                      <KTSVG
-                        path='/media/icons/duotune/general/gen027.svg'
-                        className='svg-icon-3'
-                      />
-                    </a>
-                  </div>
-                </td>
-              </tr>
 
-              <tr>
-                <td>
-                  <div className='d-flex align-items-center'>
-                    <div className='symbol symbol-45px me-5'>
-                      <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
-                    </div>
-                    <div className='d-flex justify-content-start flex-column'>
-                      <a href='#' className='text-dark fw-bolder text-hover-primary fs-6'>
-                        Ana Simmons
+              {userData && userData.map((data: any) => {
+                return (
+                  <tr key={data.id} id={data.id} onClick={editUser}>
+                    <td>
+                      <div className='d-flex align-items-center'>
+                        <div className='symbol symbol-45px me-5'>
+                          <img src={data.image_path ? data.image_path : toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
+                        </div>
+                        <div className='d-flex justify-content-start flex-column'>
+                          <a className='text-dark fw-bolder text-hover-primary fs-6'>
+                            {data?.name}
+                          </a>
+                          <span className='text-muted fw-bold text-muted d-block fs-7'>
+                            {data.role}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <a className='text-dark fw-bolder d-block fs-6'>
+                        {data.email}
                       </a>
                       <span className='text-muted fw-bold text-muted d-block fs-7'>
-                        STAFF
+                        {data?.mobile}
                       </span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <a href='#' className='text-dark fw-bolder text-hover-primary d-block fs-6'>
-                  admin@demo.com
-                  </a>
-                  <span className='text-muted fw-bold text-muted d-block fs-7'>
-                   08163726422
-                  </span>
-                </td>
-                <td className='text-end'>
-                <div className='form-check form-check-sm form-check-custom form-check-solid'>
-                    <input className='form-text-input form-control form-control-md form-control-solid ' type='text' />
-                  </div>
-                </td>
-                <td>
-                  <div className='d-flex justify-content-end flex-shrink-0'>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                    >
-                      <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                    </a>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
-                    >
-                      <KTSVG
-                        path='/media/icons/duotune/general/gen027.svg'
-                        className='svg-icon-3'
-                      />
-                    </a>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div className='d-flex align-items-center'>
-                    <div className='symbol symbol-45px me-5'>
-                      <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
-                    </div>
-                    <div className='d-flex justify-content-start flex-column'>
-                      <a href='#' className='text-dark fw-bolder text-hover-primary fs-6'>
-                        Ana Simmons
-                      </a>
-                      <span className='text-muted fw-bold text-muted d-block fs-7'>
-                        STAFF
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <a href='#' className='text-dark fw-bolder text-hover-primary d-block fs-6'>
-                  admin@demo.com
-                  </a>
-                  <span className='text-muted fw-bold text-muted d-block fs-7'>
-                   08163726422
-                  </span>
-                </td>
-                <td className='text-end'>
-                <div className='form-check form-check-sm form-check-custom form-check-solid'>
-                    <input className='form-text-input form-control form-control-md form-control-solid ' type='text' />
-                  </div>
-                </td>
-                <td>
-                  <div className='d-flex justify-content-end flex-shrink-0'>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                    >
-                      <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                    </a>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
-                    >
-                      <KTSVG
-                        path='/media/icons/duotune/general/gen027.svg'
-                        className='svg-icon-3'
-                      />
-                    </a>
-                  </div>
-                </td>
-              </tr>
-
-              <tr>
-                <td>
-                  <div className='d-flex align-items-center'>
-                    <div className='symbol symbol-45px me-5'>
-                      <img src={toAbsoluteUrl('/media/avatars/150-11.jpg')} alt='' />
-                    </div>
-                    <div className='d-flex justify-content-start flex-column'>
-                      <a href='#' className='text-dark fw-bolder text-hover-primary fs-6'>
-                        Ana Simmons
-                      </a>
-                      <span className='text-muted fw-bold text-muted d-block fs-7'>
-                        STAFF
-                      </span>
-                    </div>
-                  </div>
-                </td>
-                <td>
-                  <a href='#' className='text-dark fw-bolder text-hover-primary d-block fs-6'>
-                  admin@demo.com
-                  </a>
-                  <span className='text-muted fw-bold text-muted d-block fs-7'>
-                   08163726422
-                  </span>
-                </td>
-                <td className='text-end'>
-                <div className='form-check form-check-sm form-check-custom form-check-solid'>
-                    <input className='form-text-input form-control form-control-md form-control-solid ' type='text' />
-                  </div>
-                </td>
-                <td>
-                  <div className='d-flex justify-content-end flex-shrink-0'>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                    >
-                      <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                    </a>
-                    <a
-                      href='#'
-                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
-                    >
-                      <KTSVG
-                        path='/media/icons/duotune/general/gen027.svg'
-                        className='svg-icon-3'
-                      />
-                    </a>
-                  </div>
-                </td>
-              </tr>
-            
+                    </td>
+                    <td>
+                      <div className='d-flex justify-content-end flex-shrink-0'>
+                        <a
+                         
+                          className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
+                          id="edit-user"
+                          // 
+                        >
+                          <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
+                        </a>
+                        <a
+                         
+                          className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
+                          id="delete-user"
+                          
+                        >
+                          <KTSVG
+                            path='/media/icons/duotune/general/gen027.svg'
+                            className='svg-icon-3'
+                          />
+                        </a>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
             {/* end::Table body */}
           </table>
@@ -309,8 +208,70 @@ const TablesWidget10: React.FC<Props> = ({className}) => {
         {/* end::Table container */}
       </div>
       {/* begin::Body */}
+
+      <div className="modal fade" tabIndex={-1} id="kt_modal_1">
+
+        <form onSubmit={createUSer}>
+          <div className="modal-dialog" style={{ maxWidth: '500px' }}>  
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Add New User</h5>
+                <div
+                  className="btn btn-icon btn-sm btn-active-light-primary ms-2"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <KTSVG
+                    path="/media/icons/duotune/arrows/arr061.svg"
+                    className="svg-icon svg-icon-2x"
+                  />
+                </div>
+              </div>
+
+              <div className="modal-body">
+
+                
+                <div className="fv-row">
+                  <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                    <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                      <span className="required">Email</span>
+                    </label>
+                    <input type="text" id="email" required className="form-control form-control-solid" placeholder="Enter Email" />
+                  </div>
+                </div>
+
+                <div className="fv-row">
+                  <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                    <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                      
+                      <button type="button" className="btn btn-secondary" onClick={() =>randomPass(15)}>
+                      <span className="required">Generate Password</span>
+                </button>
+                    </label>
+
+                    <input type="text" id="password" required className="form-control form-control-solid mt-2" placeholder="Enter Password" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-light"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
 
-export {TablesWidget10}
+export { TablesWidget10 }

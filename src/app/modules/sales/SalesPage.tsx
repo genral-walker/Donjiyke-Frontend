@@ -2,8 +2,7 @@ import React, { useState } from 'react'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import { KTSVG } from '../../../_metronic/helpers'
 import { SalesTable } from '../../../_metronic/partials/widgets'
-import { useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
-import axios from 'axios'
+import http, { useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -32,25 +31,20 @@ const SalesPage: React.FC = () => {
 
   user = user.email? user : userStorage;
 
-  const userToken = useAppSelector(state => state.user.auth.accessToken) || userStorage.auth.accessToken;
-
   const submitSale = async (evt: React.FormEventHandler<HTMLFormElement> | any)=> {
   evt.preventDefault();
 
 
-  const config = {
-    headers: { Authorization: `Bearer ${userToken}` }
-  }
 
   try {
-    let res: any = await axios.post('http://localhost:8000/api/sales', {
+    let res: any = await http.post('/sales', {
       material: (document.getElementById('material') as HTMLInputElement).value,
       meter: (document.getElementById('meter') as HTMLInputElement).value,    
       payment: (document.getElementById('payment') as HTMLInputElement).value,            
       cost: (document.getElementById('cost') as HTMLInputElement).value,   
       balance: (document.getElementById('balance') as HTMLInputElement).value,
       issuer: user.email 
-    }, config);
+    });
 
     if (res) {
       alert('Sale created successfully!!')
@@ -58,7 +52,7 @@ const SalesPage: React.FC = () => {
 
 
       try {
-        let sales = await axios.get('http://localhost:8000/api/sales', config);
+        let sales = await http.get('/sales');
   
         if (sales) {
           setSale(sales.data)
@@ -99,7 +93,7 @@ return (
       <div className="modal fade" tabIndex={-1} id="kt_modal_1">
         <form onSubmit={submitSale}>
 
-          <div className="modal-dialog" style={{ maxWidth: '1000px' }}>
+          <div className="modal-dialog" style={{ maxWidth: '400px' }}>
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Add New Sale</h5>
@@ -130,47 +124,14 @@ return (
 
 
                 <div className="row g-9 mb-8">
-                  <div className="col-md-3 fv-row">
+                  <div className="col fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Meter</span>
+                        <span className="required">Metre Out</span>
                       </label>
-                      <input type="number" id="meter" required className="form-control form-control-solid" placeholder="Enter Meter" />
+                      <input type="number" id="meter" required className="form-control form-control-solid" placeholder="Enter Metre Out" />
                     </div>
                   </div>
-
-                  <div className="col-md-3 fv-row">
-                    <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                      <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Payment</span>
-                      </label>
-
-                      <input type="number" id="payment" required className="form-control form-control-solid" placeholder="Enter Payment" />
-                    </div>
-                  </div>
-                  <div className="col-md-3 fv-row">
-                    <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                      <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Cost</span>
-                      </label>
-
-                      <input type="number" id="cost" required className="form-control form-control-solid" placeholder="Enter Cost" />
-                    </div>
-                  </div>
-                  <div className="col-md-3 fv-row">
-                    <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                      <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                        <span className="required">Balance</span>
-                      </label>
-
-                      <input type="number" id="balance" required className="form-control form-control-solid" placeholder="Enter Balance" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="d-flex flex-column mb-8">
-                  <label className="fs-6 fw-bold mb-2 required">Material</label>
-                  <textarea className="form-control form-control-solid" id="material" rows={3} required placeholder="Enter Material"></textarea>
                 </div>
 
               </div>

@@ -2,45 +2,20 @@
 import axios from 'axios'
 import { FC } from 'react'
 import { Link } from 'react-router-dom'
-import { logOut } from '../../../../setup/redux/user/userActions'
-import { useAppSelector, useAppDispatch } from '../../../../setup/redux/useRedux'
+import { logOut } from '../../../../setup/redux/reducers/user'
+import http, { useAppSelector, useAppDispatch } from '../../../../setup/redux/useRedux'
 import { toAbsoluteUrl } from '../../../helpers'
 
 const HeaderUserMenu: FC = () => {
   const user = useAppSelector(state => state.user);
-  const dispacth = useAppDispatch();
-  
-  let userStorage: any = window.localStorage.getItem('user');
-  userStorage =JSON.parse(`${userStorage}`); 
-        
-  // const userToken = useAppSelector(state => state?.user?.auth?.accessToken) || userStorage?.auth?.accessToken;
+  const dispatch = useAppDispatch();
 
-  const signOut = async() =>{
-
-  try {
-    let out = await dispacth(logOut());
-    out && window.location.reload();
-  } catch (error: any) {
-    
-  }
-
-    
-    /*
-        const config = {
-      headers: { Authorization: `Bearer ${userToken}` }
-  };
-
+  const signOut = () => {
     try {
-      let res = await axios.post('http://localhost:8000/api/logout', config);
-
-      if (res) {
-        dispacth(logOut())
-      }
-
-    } catch (error) {
-      alert(error)
+      http.post('/logout').then(() => dispatch(logOut()))
+    } catch (error: any) {
+      alert('Please try again.')
     }
-    */ 
   }
 
   return (
@@ -70,7 +45,7 @@ const HeaderUserMenu: FC = () => {
 
       <div className='menu-item px-5'>
         <Link to={'/crafted/account'} className='menu-link px-5'>
-          My Profile   
+          My Profile
         </Link>
       </div>
 

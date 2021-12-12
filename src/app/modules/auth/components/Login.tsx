@@ -4,14 +4,13 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import { Link } from 'react-router-dom'
 import { useFormik } from 'formik'
-import axios from 'axios'
-import { useAppDispatch } from '../../../../setup/redux/useRedux'
-import { loginIn } from '../../../../setup/redux/user/userActions'
+import { useAppDispatch, httpFree } from '../../../../setup/redux/useRedux'
+import { loginIn } from '../../../../setup/redux/reducers/user'
 
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
-    .email('Wrong email format')
+    .email('Wrong email format')   
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Email is required'),
@@ -44,21 +43,22 @@ export function Login() {
       setLoading(true)
      
       try {
-        let res = await axios.post('http://localhost:8000/api/login', {
-          email: values.email,       
-          password: values.password,
+        let res = await httpFree.post('/login', {      
+          email: values.email,              
+          password: values.password   
         });
         setLoading(false)  
+        window.localStorage.setItem('user', JSON.stringify(res.data));      
         dispatch(loginIn(res.data))
 
       } catch (error) {
+        console.log(error, 'HELLLOOO')
         setLoading(false)
         setSubmitting(false)
         setStatus('The login detail is incorrect')
       }
     },
   })
-
 
 
 
@@ -77,6 +77,7 @@ export function Login() {
 
       {formik.status ? (
         <div className='mb-lg-15 alert alert-danger'>
+          {console.log(formik)}  
           <div className='alert-text font-weight-bold'>{formik.status}</div>
         </div>
       ) : (

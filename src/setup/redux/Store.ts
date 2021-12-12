@@ -1,18 +1,17 @@
 
-import { createStore } from 'redux';
-import rootReducer from './root-reducer';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk'
+import { composeWithDevTools } from 'redux-devtools-extension'
+import rootReducer from './reducers';  
+
 
 const store = createStore(
-    rootReducer,
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__()
-);
+    rootReducer,   
+    composeWithDevTools(applyMiddleware(thunkMiddleware))   
+);       
   
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch
 
 export default store;
-
-/*
-export const composeEnhancers =
-  (window && (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) || compose;
-*/ 
+    

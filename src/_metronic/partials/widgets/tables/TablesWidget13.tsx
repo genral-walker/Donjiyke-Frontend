@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import axios from 'axios'
+// STOCKS COMPONENT 
 import React, {useState, useEffect} from 'react'
 import { useHistory, useLocation } from 'react-router'
-import { useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 
 type Props = {
@@ -19,19 +19,11 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
 
  const user = useAppSelector(state => state.user);
 
- let userStorage: any = window.localStorage.getItem('user');
- userStorage = JSON.parse(`${userStorage}`);
-
- const userToken = useAppSelector(state => state?.user?.auth?.accessToken) || userStorage?.auth?.accessToken;
 
  const fetchStocks = async () => {
 
-   const config = {
-     headers: { Authorization: `Bearer ${userToken}` }
-   }
-
    try {
-     let res = await axios.get('http://localhost:8000/api/stocks', config);
+     let res = await http.get('/stocks');
 
      if (res) {
 
@@ -54,7 +46,7 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
    
     let stocksStorage: any = window.localStorage.getItem('stocks');
     stocksStorage =JSON.parse(`${stocksStorage}`); 
-   if (stocksStorage && stock.length === 0) {
+   if (stocksStorage && stock?.length === 0) {
      setStock(stocksStorage)
    }
   }, []);
@@ -93,19 +85,22 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
         {/* begin::Table container */}
         <div className='table-responsive'>
           {/* begin::Table */}
-          <table className='table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3'>
+          <table className='table table-row-bordered table-row-gray-400 align-middle gs-0 gy-3'>
             {/* begin::Table head */}
             <thead>
-              <tr className='fw-bolder text-muted'>
+              <tr className='fw-bolder text-muted text-gray-700'>
+                <th className='min-w-60px'>Rolls</th>
                 <th className='min-w-120px'>Date In</th>
-                <th className='min-w-100px'>kg</th>
-                <th className='min-w-100px'>Metre Run</th>
-                <th className='min-w-120px'>Date Out</th>
+                <th className='min-w-120px'>kg</th>
+                <th className='min-w-120px'>Metre Run</th>
+                <th className='min-w-120px'>Balance</th>   
+
+                {/* <th className='min-w-120px'>Date Out</th>
                 <th className='min-w-100px'>Metre Out</th>
                 <th className='min-w-150px'>Issued By</th>
                 <th className='min-w-150px'>Issued To</th>
                 <th className='min-w-120px'>Cost</th>
-                <th className='min-w-120px text-end'>Balance</th>
+                <th className='min-w-120px text-end'>Balance</th> */}
               </tr>
             </thead>
             {/* end::Table head */}
@@ -116,7 +111,11 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
 
                   return (
                     <tr>
-
+                      <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                       Row {data.id}
+                      </span>
+                    </td>
                     <td>
                       <span className='text-dark fw-bolder fs-6'>
                         {data.created_at}
@@ -134,6 +133,13 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
     
                     </td>
                     <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        {data.balance} mtr
+                      </span>
+    
+                    </td>
+                    
+                    {/* <td>
                       <span className='text-dark fw-bolder fs-6'>
                         {data.updated_at}
                       </span>
@@ -168,15 +174,14 @@ const TablesWidget13: React.FC<Props> = ({ className, datum }) => {
                      </a>
                      <a href='#' className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'>
                        <KTSVG path='/media/icons/duotune/general/gen027.svg' className='svg-icon-3' />
-                     </a> */}
+                     </a> 
                       <span className='text-dark fw-bolder fs-6'>{data.balance}</span>
     
-                    </td>
+                    </td> */}
                   </tr>
-                )
-                }) :
-
-                <tr><h2 style={{ margin: '1rem auto', width: '200px' }}>No Stocks Data</h2></tr>        
+                )     
+                }) :    
+                <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Stocks Data</h3></td></tr>        
               }
             </tbody>
             {/* end::Table body */}

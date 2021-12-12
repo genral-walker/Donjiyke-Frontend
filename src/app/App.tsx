@@ -9,6 +9,7 @@ type Props = {
   basename: string
 }
 
+
 const App: React.FC<Props> = ({basename}) => {
   return (
     <Suspense fallback={<LayoutSplashScreen />}>

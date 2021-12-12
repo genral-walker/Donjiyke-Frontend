@@ -1,6 +1,21 @@
-import {UserModel} from '../../../app/modules/auth/models/UserModel'
-import userActionTypes from './userActionTypes'
-import {} from './userUtils'
+import { UserModel } from '../../../app/modules/auth/models/UserModel'
+
+const actionTypes = {
+  USER_LOGGED_IN: 'USER_LOGGED_IN',
+  USER_LOGGED_OUT: 'USER_LOGGED_OUT',
+};
+
+export const loginIn = (user: object) => ({
+  type: actionTypes.USER_LOGGED_IN,
+  payload: user
+});
+
+export const logOut = () => ({
+  type: actionTypes.USER_LOGGED_OUT,
+});
+
+
+
 
 const INITIAL_STATE: UserModel = {
   auth: {
@@ -31,28 +46,26 @@ type Action = {
 }
 */
 
-const userReducer = (state = INITIAL_STATE, {type, payload}: Action) => {
+const userReducer = (state = INITIAL_STATE, { type, payload }: Action) => {
   switch (type) {
-    case userActionTypes.USER_LOGGED_IN:
+    case actionTypes.USER_LOGGED_IN:
       const payloadData = {
         ...payload.user,
         avater: payload.image_path,
         auth: {
-          accessToken: payload.token,
-          isAuthorized: true,
+          accessToken: payload.token,          
+          isAuthorized: true, 
         },
       };
-      window.localStorage.setItem('user', JSON.stringify(payloadData));
-      
       return payloadData;
 
-    case userActionTypes.USER_LOGGED_OUT:
-      state = INITIAL_STATE;
+
+    case actionTypes.USER_LOGGED_OUT:
       window.localStorage.clear();
-      return state;
+      window.location.reload();
+      return INITIAL_STATE;
 
     default:
-      state = INITIAL_STATE;
       return state
   }
 }

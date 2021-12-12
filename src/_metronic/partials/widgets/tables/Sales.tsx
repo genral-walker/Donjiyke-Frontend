@@ -1,15 +1,16 @@
 
-/* eslint-disable jsx-a11y/anchor-is-valid */ 
-import axios from 'axios'
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 // import { saveSales } from '../../../../setup/redux/sales/salesActions'
-import { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
+
+// SALES COMPONENT    
 
 type Props = {
   className: string,
-  datum?: any  
+  datum?: any
 }
 
 const SalesTable: React.FC<Props> = ({ className, datum }) => {
@@ -24,18 +25,10 @@ const SalesTable: React.FC<Props> = ({ className, datum }) => {
   let userStorage: any = window.localStorage.getItem('user');
   userStorage = JSON.parse(`${userStorage}`);
 
-  const userToken = useAppSelector(state => state.user.auth.accessToken) || userStorage.auth.accessToken;
-
   const fetchSales = async () => {
 
-    // console.log(userToken);
-
-    const config = {
-      headers: { Authorization: `Bearer ${userToken}` }
-    }
-
     try {
-      let res = await axios.get('http://localhost:8000/api/sales', config);
+      let res = await http.get('/sales');
 
       if (res) {
 
@@ -43,29 +36,29 @@ const SalesTable: React.FC<Props> = ({ className, datum }) => {
         setsale(res.data);
       }
 
-    } catch (error: any) {      
+    } catch (error: any) {
       alert(error.message ?? error)
     }
   }
 
 
   useEffect(() => {
-   fetchSales();
+    fetchSales();
   }, []);
 
 
   useEffect(() => {
-    
-     let salesStorage: any = window.localStorage.getItem('sales');
-      salesStorage =JSON.parse(`${salesStorage}`); 
+
+    let salesStorage: any = window.localStorage.getItem('sales');
+    salesStorage = JSON.parse(`${salesStorage}`);
     if (salesStorage && sale.length === 0) {
       setsale(salesStorage)
     }
-   }, []);
+  }, []);
 
-   useEffect(() => {
+  useEffect(() => {
     setsale(datum)
-   }, [datum]);
+  }, [datum]);
 
 
   return (
@@ -95,78 +88,78 @@ const SalesTable: React.FC<Props> = ({ className, datum }) => {
 
       <div className='card-body py-3'>
         {/* begin::Table container */}
-        <div className='table-responsive'>
+        <div className='table-responsive'>        
           {/* begin::Table */}
-          <table className='table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3'>
+          <div className="border-bottom border-gray-400 text-center mb-5"><th className='text-gray-900 card-label fw-bolder fs-6 d-block my-3'>ROW 1</th></div>
+          <table className='table table-row-bordered table-row-gray-400 align-middle gs-0 gy-3'>
             {/* begin::Table head */}
-            <thead>
-              <tr className='fw-bolder text-muted'>
-                <th className='min-w-120px'>Date</th>
-                <th className='min-w-150px'>Material</th>
-                <th className='min-w-100px'>Meter</th>
-                <th className='min-w-100px'>Payment</th>
-                <th className='min-w-120px'>Cost</th>
-                <th className='min-w-150px'>Issued By</th>
-                {/* <th className='min-w-150px'>Issued To</th> */}
-                <th className='min-w-120px text-end'>Balance</th>
+            <thead>  
+              <tr className='fw-bolder text-muted text-gray-700'>
+              <th className='min-w-50px'>S/N</th>
+                <th className='min-w-120px'>Date In</th>
+                <th className='min-w-120px'>Metre Run</th>   
+                <th className='min-w-100px'>Date Out</th>         
+                <th className='min-w-100px'>Metre Out</th>
+                <th className='min-w-120px'>Issued By</th>
+                {/* <th className='min-w-150px text-end'>Issued To</th> */}
+                <th className='min-w-120px'>Balance</th>
               </tr>
             </thead>
             {/* end::Table head */}
             {/* begin::Table body */}
             <tbody>
-
-              { sale ?
+              {sale ?
                 sale?.map((data: any) => {
-/*
-{
-        "id": 1,
-        "material": "sfsfasdsas",
-        "meter": "23234",
-        "payment": "23423",
-        "cost": "2141",
-        "balance": "2123",
-        "created_at": "2021-11-09T11:28:08.000000Z",
-        "updated_at": "2021-11-09T11:28:08.000000Z"
-    }
-*/
+                  /*
+                  {
+                          "id": 1,
+                          "material": "sfsfasdsas",
+                          "meter": "23234",
+                          "payment": "23423",
+                          "cost": "2141",
+                          "balance": "2123",
+                          "created_at": "2021-11-09T11:28:08.000000Z",
+                          "updated_at": "2021-11-09T11:28:08.000000Z"
+                      }
+                  */
                   return (<tr>
+                     
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        {data.created_at}
+                      </span>
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        {data.material}
+                      </span>
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        {data.meter}
+                      </span>
 
-                  <td>
-                    <span className='text-dark fw-bolder fs-6'>
-                      {data.created_at}
-                    </span>
-                  </td>
-                  <td>
-                    <span className='text-dark fw-bolder fs-6'>
-                     {data.material}
-                    </span>
-                  </td>
-                  <td>
-                    <span className='text-dark fw-bolder fs-6'>
-                      {data.meter}
-                    </span>
-  
-                  </td>
-                  <td>
-                    <span className='text-dark fw-bolder fs-6'>
-                      ₦{data.payment}
-                    </span>
-                  </td>
-                  <td className='text-dark fw-bolder fs-6'>₦{data.cost}</td>
-                  <td>
-                    <div className='d-flex align-items-center' style={{ pointerEvents: 'none' }}>
-                      <div className='symbol symbol-30px me-3'>
-                        <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        ₦{data.payment}
+                      </span>
+                    </td>
+                    <td className='text-dark fw-bolder fs-6'>₦{data.cost}</td>
+                    <td>
+                      <div className='d-flex align-items-center' style={{ pointerEvents: 'none' }}>
+                        <div className='symbol symbol-30px me-3'>
+                          <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
+                        </div>
+                        <div className='d-flex justify-content-start flex-column'>
+                          <a href='#' className='text-dark fw-bolder fs-6'>
+                            {data.issuer}
+                          </a>
+                        </div>
                       </div>
-                      <div className='d-flex justify-content-start flex-column'>
-                        <a href='#' className='text-dark fw-bolder fs-6'>     
-                          {data.issuer}
-                        </a>
-                      </div>
-                    </div>
-                  </td>
-                  <td className='text-end'>
-                    {/* <a
+                    </td>
+                    <td className='text-end'>
+                      {/* <a
                      href='#'
                      className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
                    >
@@ -175,14 +168,15 @@ const SalesTable: React.FC<Props> = ({ className, datum }) => {
                    <a href='#' className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'>
                      <KTSVG path='/media/icons/duotune/general/gen027.svg' className='svg-icon-3' />
                    </a> */}
-                    <span className='text-dark fw-bolder fs-6'>₦{data.balance}</span>
-  
-                  </td>
-                </tr>)
+                      <span className='text-dark fw-bolder fs-6'>₦{data.balance}</span>
+
+                    </td>
+                  </tr>)
                 }) :
 
-                <tr><h2 style={{ margin: '1rem auto', width: '200px' }}>No Sales Data</h2></tr>        
-              }
+                <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Sales Data</h3></td></tr> 
+                // <tr style={{ background: 'blue', width: '100% !important' }}> <th scope="row" style={{ margin: '1rem auto', width: '100%', background: 'grey' }}>ROW 1</th></tr>   
+              }    
             </tbody>
             {/* end::Table body */}
           </table>

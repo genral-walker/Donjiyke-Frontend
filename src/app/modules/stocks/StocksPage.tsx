@@ -2,8 +2,8 @@ import React, {useState} from 'react'
 import { KTSVG } from '../../../_metronic/helpers'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import { TablesWidget13 } from '../../../_metronic/partials/widgets'
-import { useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
-import axios from 'axios'
+import http, { useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
+
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -19,39 +19,31 @@ const accountBreadCrumbs: Array<PageLink> = [
     isActive: false,
   },
 ]
-
+/*
+Add New Stock
+STOCKS PAGE
+*/ 
 const StocksPage: React.FC = () => {
 
   const [stock, setStock] = useState<any>();
 
-
   let userStorage: any = window.localStorage.getItem('user');
-  userStorage = JSON.parse(`${userStorage}`);   
+  userStorage = JSON.parse(`${userStorage}`);
   
   let user = useAppSelector(state => state.user);
 
   user = user.email? user : userStorage;
 
-  const userToken = useAppSelector(state => state?.user?.auth?.accessToken) || userStorage?.auth?.accessToken;
 
   const submitStock = async (evt: React.FormEventHandler<HTMLFormElement> | any)=> {
   evt.preventDefault(); 
-
-  const config = {
-    headers: {Authorization: `Bearer ${userToken}` }
-  }
-
+  
   try {
-    let res: any = await axios.post('http://localhost:8000/api/stocks', {
-      kg: `${(document.getElementById('kg') as HTMLInputElement).value}`,
-      metre_run: `${(document.getElementById('metre-run') as HTMLInputElement).value}`,    
-      metre_out: `${(document.getElementById('metre-out') as HTMLInputElement).value}`,            
-      issued_to: `${(document.getElementById('issued-to') as HTMLInputElement).value}`,   
-      cost: `${(document.getElementById('cost') as HTMLInputElement).value}`,
-      balance: `${(document.getElementById('balance') as HTMLInputElement).value}`,
-      issued_by: user.email
-
-    }, config);
+    let res: any = await http.post('/stocks', {
+      kg: (document.getElementById('kg') as HTMLInputElement).value,     
+      metre_run: (document.getElementById('metre-run') as HTMLInputElement).value,    
+      balance: (document.getElementById('metre-run') as HTMLInputElement).value,
+    });
 
     if (res) {
       alert('Stock created successfully!!')
@@ -59,7 +51,7 @@ const StocksPage: React.FC = () => {
 
 
       try {
-        let stocks = await axios.get('http://localhost:8000/api/stocks', config);
+        let stocks = await http.get('/stocks');            
   
         if (stocks) {
           setStock(stocks.data)
@@ -67,12 +59,14 @@ const StocksPage: React.FC = () => {
         }
   
       } catch (error: any) {      
+        console.log(error.message ?? error);
         alert(error.message ?? error)
       }
       
     }      
 
-  } catch (error: any) {      
+  } catch (error: any) {    
+    console.log(error.message ?? error)  
     alert(error.message ?? error)
   }
 
@@ -100,7 +94,7 @@ const StocksPage: React.FC = () => {
         <div className="modal fade" tabIndex={-1} id="kt_modal_1">
 
           <form onSubmit={submitStock}>
-            <div className="modal-dialog" style={{ maxWidth: '1000px' }}>
+            <div className="modal-dialog" style={{ maxWidth: '500px' }}>
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">Add New Stock</h5>
@@ -129,7 +123,7 @@ const StocksPage: React.FC = () => {
                   </div> */}
 
                 <div className="row g-9 mb-8">
-                  <div className="col-md-3 fv-row">
+                  <div className="col-md-6 fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                         <span className="required">Kg</span>
@@ -138,7 +132,7 @@ const StocksPage: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="col-md-3 fv-row">
+                  <div className="col-md-6 fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                         <span className="required">Metre Run</span>
@@ -147,7 +141,8 @@ const StocksPage: React.FC = () => {
                       <input type="number" id="metre-run" required className="form-control form-control-solid" placeholder="Enter Metre Run" />
                     </div>
                   </div>
-                  <div className="col-md-3 fv-row">
+                  
+                  {/* <div className="col-md-3 fv-row">
                     <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                         <span className="required">Metre Out</span>
@@ -164,10 +159,10 @@ const StocksPage: React.FC = () => {
 
                       <input type="number" id="cost" required className="form-control form-control-solid" placeholder="Enter Cost" />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
 
-                <div className="row g-9 mb-8">
+                {/* <div className="row g-9 mb-8">
                   <div className="col-md-6 fv-row">
                   <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                       <label className="d-flex align-items-center fs-6 fw-bold mb-2">
@@ -184,7 +179,7 @@ const StocksPage: React.FC = () => {
                   <textarea className="form-control form-control-solid" id="issued-to" rows={3} required placeholder="Issued To?"></textarea>
                 </div>
                   </div>
-                  </div>
+                  </div> */}
 
               </div>
 
