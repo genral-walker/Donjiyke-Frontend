@@ -1,17 +1,24 @@
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react'
+import { css } from 'styled-components'
 import { useHistory, useLocation } from 'react-router'
 import { addSales } from '../../../../setup/redux/reducers/sales'
 // import { saveSales } from '../../../../setup/redux/sales/salesActions'
 import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
-import { KTSVG, toAbsoluteUrl } from '../../../helpers'
-
+import { KTSVG, toAbsoluteUrl } from '../../../helpers'    
 // SALES COMPONENT    
 
-type Props = {
-  className: string
-}
+type Props = {    
+  className: string 
+}   
+
+const thStyles = css`
+
+  min-width: max-content !important;   
+  border: 4px solid green !important;   
+
+`
 
 const SalesTable: React.FC<Props> = ({ className }) => {
 
@@ -22,7 +29,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
   const sales = useAppSelector(state => state.sales);
 
 
- const fetchSales = async () => {
+  const fetchSales = async () => {
 
     try {
       let res = await http.get('/sales');
@@ -33,15 +40,9 @@ const SalesTable: React.FC<Props> = ({ className }) => {
 
     } catch (error: any) {
       console.log(error.message ?? error)
-      alert('Network error loading sales data. Please refresh the page.')  
+      alert('Network error loading sales data. Please refresh the page.')
     }
   }
-
-
-  useEffect(() => {
-    fetchSales();
-  }, []);
-
 
   return (
     <div className={`card ${className}`}>
@@ -70,20 +71,20 @@ const SalesTable: React.FC<Props> = ({ className }) => {
 
       <div className='card-body py-3'>
         {/* begin::Table container */}
-        <div className='table-responsive'>        
+        <div className='table-responsive'>
           {/* begin::Table */}
           <div className="border-bottom border-gray-400 text-center mb-5"><th className='text-gray-900 card-label fw-bolder fs-6 d-block my-3'>ROW 1</th></div>
           <table className='table table-row-bordered table-row-gray-400 align-middle gs-0 gy-3'>
-            {/* begin::Table head */}
-            <thead>  
-              <tr className='fw-bolder text-muted text-gray-700'>
-              <th className='min-w-50px'>S/N</th>
+            {/* begin::Table head */}    
+            <thead>
+              <tr className='fw-bolder text-muted text-gray-700' {...thStyles}>
+                <th className='min-w-50px'>S/N</th>
                 <th className='min-w-120px'>Date In</th>
-                <th className='min-w-120px'>Metre Run</th>   
-                <th className='min-w-100px'>Date Out</th>         
+                <th className='min-w-120px'>Metre Run</th>
+                <th className='min-w-100px'>Date Out</th>
                 <th className='min-w-100px'>Metre Out</th>
                 <th className='min-w-120px'>Issued By</th>
-                {/* <th className='min-w-150px text-end'>Issued To</th> */}
+                <th className='min-w-130px'>Issued To</th>
                 <th className='min-w-120px'>Balance</th>
               </tr>
             </thead>
@@ -105,7 +106,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                       }
                   */
                   return (<tr>
-                     
+
                     <td>
                       <span className='text-dark fw-bolder fs-6'>
                         {data.created_at}
@@ -129,16 +130,14 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                     </td>
                     <td className='text-dark fw-bolder fs-6'>₦{data.cost}</td>
                     <td>
-                      <div className='d-flex align-items-center' style={{ pointerEvents: 'none' }}>
-                        <div className='symbol symbol-30px me-3'>
-                          <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
-                        </div>
-                        <div className='d-flex justify-content-start flex-column'>
-                          <a href='#' className='text-dark fw-bolder fs-6'>
-                            {data.issuer}
-                          </a>
-                        </div>
-                      </div>
+                      <span className='text-dark fw-bolder fs-6'>
+                        ₦{data.issuer}
+                      </span>
+                    </td>
+                    <td>
+                      <span className='text-dark fw-bolder fs-6'>
+                        ₦{data.issued_to}
+                      </span>
                     </td>
                     <td className='text-end'>
                       {/* <a
@@ -156,9 +155,9 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                   </tr>)
                 }) :
 
-                <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Sales Data</h3></td></tr> 
+                <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Sales Data</h3></td></tr>
                 // <tr style={{ background: 'blue', width: '100% !important' }}> <th scope="row" style={{ margin: '1rem auto', width: '100%', background: 'grey' }}>ROW 1</th></tr>   
-              }    
+              }
             </tbody>
             {/* end::Table body */}
           </table>
@@ -168,7 +167,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
       </div>
       {/* begin::Body */}
     </div>
-  )   
+  )
 }
 
 export { SalesTable }

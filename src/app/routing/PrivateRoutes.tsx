@@ -1,9 +1,13 @@
 import React, { Suspense, lazy, useEffect } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
+import { addSales } from '../../setup/redux/reducers/sales'
+import { addStock } from '../../setup/redux/reducers/stocks'
+import { addUser } from '../../setup/redux/reducers/users'
 import http, { useAppDispatch, useAppSelector } from '../../setup/redux/useRedux'
 import { FallbackView } from '../../_metronic/partials'
 import { DashboardWrapper } from '../pages/dashboard/DashboardWrapper'
 import { MenuTestPage } from '../pages/MenuTestPage'
+
 
 export function PrivateRoutes() {
 
@@ -20,7 +24,7 @@ export function PrivateRoutes() {
   const SalesPage = lazy(() => import('../modules/sales/SalesPage'))
 
   const fetchUIs = async () => {
-    let data: {};
+    let data: any;
 
     try {
       if (user.role === 'admin') {
@@ -31,15 +35,20 @@ export function PrivateRoutes() {
         ]);
 
         data = { sales: res[0].data, stocks: res[1].data, users: res[2].data };
+        dispatch(addSales(data.sales))
+        dispatch(addStock(data.stocks))
+        dispatch(addUser(data.users))
 
       } else {
 
-        const res = await Promise.all([
+        const res = await Promise.all([   
           http.get('/sales'),
           http.get('/stocks')
         ]);
 
         data = { sales: res[0].data, stocks: res[1].data };
+        dispatch(addSales(data.sales))
+        dispatch(addStock(data.stocks))
       }
       
     } catch (err) {

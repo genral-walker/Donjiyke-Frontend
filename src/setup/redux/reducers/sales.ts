@@ -2,10 +2,16 @@
 const actionTypes = {
   LOAD_SALES: 'LOAD_SALES',
   SALES_ADDED: 'SALES_ADDED',
+  NEW_SALE_ADDED: 'NEW_SALE_ADDED'
 };
 
 export const addSales = (data: any) => ({
   type: actionTypes.SALES_ADDED,
+  payload: data
+});
+
+export const addNewSale = (data: any) => ({
+  type: actionTypes.NEW_SALE_ADDED,
   payload: data
 });
 
@@ -24,7 +30,10 @@ type Action = {
 const salesReducer = (state = INITIAL_STATE, { type, payload }: Action) => {
   switch (type) {
     case actionTypes.SALES_ADDED:
-      return [...payload]    
+      return [...payload]
+
+    case actionTypes.NEW_SALE_ADDED:
+      return [...state, payload]
 
     default:
       return state

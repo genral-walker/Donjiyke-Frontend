@@ -36,11 +36,6 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
   }
 
 
-  useEffect(() => {
-    fetchStocks();
-  }, []);
-
-
 
   return (
     <div className={`card ${className}`}>

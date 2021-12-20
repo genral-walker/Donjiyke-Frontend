@@ -52,7 +52,6 @@ export function Login() {
         dispatch(loginIn(res.data))
 
       } catch (error) {
-        console.log(error, 'HELLLOOO')
         setLoading(false)
         setSubmitting(false)
         setStatus('The login detail is incorrect')

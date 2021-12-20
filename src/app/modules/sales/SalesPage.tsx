@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import { KTSVG } from '../../../_metronic/helpers'
 import { SalesTable } from '../../../_metronic/partials/widgets'
 import http, { useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
-import { addSales } from '../../../setup/redux/reducers/sales'
+import { addNewSale, addSales } from '../../../setup/redux/reducers/sales'
+import { updateStock } from '../../../setup/redux/reducers/stocks'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -27,60 +28,66 @@ const SalesPage: React.FC = () => {
   const user = useAppSelector(state => state.user);
   const stocks = useAppSelector(state => state.stocks);
   const dispatch = useAppDispatch();
+  const [choosenRoll, setChoosenRoll] = useState<any | {}>();
+  const [loading, setLoading] = useState(false)
+
+  const availableStocks = useMemo(() => stocks.filter((stock: any) => parseInt(stock.balance) > 0), [stocks]);
 
   const submitSale = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {
     evt.preventDefault();
-    const metreValue = (document.getElementById('meter') as HTMLInputElement).value;
-    return console.log(metreValue, stocks[0].metre_run);     
+    setLoading(true);
+
+    const metreOut = (document.getElementById('meter') as HTMLInputElement).value;
+    const issuedTo = (document.getElementById('issued_to') as HTMLInputElement).value;
+    const targetRoll = (document.getElementById('target_roll') as HTMLInputElement).value;
     /*
     IF the user is admin, allow them to make a sale.
     else if the user isn't admin...
       Check if they have filled their name, if yes then allow them make a sale.
       else prompt them to fill their name first, then direct them to the profile page to fill in their name.
     */
-    try {
-      let res: any = await http.post('/sales', {  
-        /*
-        If the metre out is taken fromm more than one row... divide the call according to the row. when all the calls succeed 
-        only then will u show success.
-         else show suucess to where it reached.
-        */ 
+    /*
+    STEPS.
+  
+    
+    */
 
-        /*
-        check how much metre run was inputed.
-        divide or just make a single call if all meter out can be gotten from the current row which isn't empty.
-        */  
-        target_roll: (document.getElementById('material') as HTMLInputElement).value, //role we are making the sale from
-        metre_run: '', // get the previous object metre run or get the balance data from stocks.
-        metre_out: (document.getElementById('meter') as HTMLInputElement).value, // get from the input field... calculate how the meter out and deermine how many roles you'd take from. show error if it's more than the availabe row and give them the total they can take. also determine how many was taken from each row so it'll be shown when fetched again.
-        balance: (document.getElementById('balance') as HTMLInputElement).value, // deduct metre out from metre run.
-        issuer: user.email // if admin, use the status else use the name of the issuer.
+    try {
+      let res: any = await http.post('/sales', {
+        target_roll: targetRoll, // ID of the role selected from
+        metre_run: choosenRoll ? choosenRoll.balance : availableStocks[0]?.balance,
+        metre_out: metreOut,
+        balance: `${choosenRoll ? +choosenRoll.balance - +metreOut : availableStocks[0]?.balance - +metreOut}`, // deduct metre out from metre run.
+        issuer: user.email, // if admin, use the status else use the name of the issuer.
+        issued_to: issuedTo
       });
 
-      if (res) {
-        alert('Sale created successfully!!')
-        evt.target.reset();
+      dispatch(addNewSale(res.data));
+      alert('Sale created successfully!!')
+      try {
 
-        try {
-          let sales = await http.get('/sales');
+        const stockUpdated = await http.patch(`/stocks/${parseInt(targetRoll)}`, { balance: `${choosenRoll ? +choosenRoll.balance - +metreOut : availableStocks[0]?.balance - +metreOut}` })
+  
+        dispatch(updateStock(stockUpdated.data))
 
-          if (sales) {
-            dispatch(addSales(sales.data))
-          }
-
-        } catch (error: any) {
-          console.log(error.message ?? error)
-          alert('Network error, please try again.')
-        }
-
+      } catch (error: any) {
+        console.log(error.message ?? error)
+        alert('Network error, please try again.')
+        setLoading(false);
       }
+
+
+      evt.target.reset();
+      setLoading(false);
 
     } catch (error: any) {
       console.log(error.message ?? error)
       alert('Network error, please try again.')
+      setLoading(false)
     }
 
   }
+
 
   return (
     <>
@@ -111,6 +118,7 @@ const SalesPage: React.FC = () => {
                     className="btn btn-icon btn-sm btn-active-light-primary ms-2"
                     data-bs-dismiss="modal"
                     aria-label="Close"
+                    onClick={()=> console.log('clikced')}    
                   >
                     <KTSVG
                       path="/media/icons/duotune/arrows/arr061.svg"
@@ -121,25 +129,31 @@ const SalesPage: React.FC = () => {
 
                 {/* <form> */}
                 <div className="modal-body">
-
-                  {/* <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
-                  <label className="d-flex align-items-center fs-6 fw-bold mb-2">
-                    <span className="required">Target Title</span>
-                    <i className="fas fa-exclamation-circle ms-2 fs-7" data-bs-toggle="tooltip" title="" data-bs-original-title="Specify a target name for future usage and reference" aria-label="Specify a target name for future usage and reference"></i>
-                  </label>
-                 
-                  <input type="text" className="form-control form-control-solid" placeholder="Enter Target Title" />
-                  <div className ="fv-plugins-message-container invalid-feedback"></div>
-                  </div> */}
-
-
                   <div className="row g-9 mb-8">
                     <div className="col fv-row">
                       <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                         <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                           <span className="required">Metre Out</span>
                         </label>
-                        <input type="number" id="meter" required className="form-control form-control-solid" placeholder="Enter Metre Out" />
+                        <input type="number" min={1} max={choosenRoll ? choosenRoll.balance : availableStocks[0]?.balance} id="meter" required className="form-control form-control-solid" placeholder="Enter Metre Out" />
+                      </div>
+                    </div>
+                    <div className="col fv-row">
+                      <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                          <span className="required">Select Roll</span>
+                        </label>
+                        <select onChange={(e) => setChoosenRoll(() => availableStocks.find((stock: any) => `${stock.id}` === e.target.value))} required className="form-control form-control-solid" id="target_roll" aria-label="Select Roll" placeholder="Select which roll to take from.">
+                          {availableStocks && availableStocks.map((stock: any) => <option value={stock.id}>Row {stock.id}</option>)}
+                        </select>
+                      </div>
+                    </div>
+                    <div className="col-12 fv-row">
+                      <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                          <span className="required">Issued To?</span>
+                        </label>
+                        <input type="textarea" id="issued_to" required className="form-control form-control-solid" placeholder="Issued to?" />
                       </div>
                     </div>
                   </div>
@@ -154,8 +168,14 @@ const SalesPage: React.FC = () => {
                   >
                     Close
                   </button>
-                  <button type="submit" className="btn btn-primary">
-                    Submit
+                  <button type="submit" className="btn btn-primary" disabled={loading}>
+                    {!loading && <span className='indicator-label'>Submit</span>}
+                    {loading && (
+                      <span className='indicator-progress' style={{ display: 'block' }}>
+                        Submitting...
+                        <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                      </span>
+                    )}
                   </button>
                 </div>
 
@@ -163,7 +183,7 @@ const SalesPage: React.FC = () => {
             </div>
 
           </form>
-        </div>   
+        </div>
       </div>
     </>
   )

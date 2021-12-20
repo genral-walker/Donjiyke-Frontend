@@ -2,8 +2,9 @@
 import axios, { AxiosError, AxiosResponse } from 'axios'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from './store'
-import store from './store';
-   
+import store from './store';    
+      
+//http://localhost:8000/api
 // https://donjiyke-api.sqtdemo.com.ng/public/api
 
 const userToken = store.getState().user.auth.accessToken;
@@ -46,7 +47,7 @@ httpFree.interceptors.request.use(
 export {httpFree};
 
 
-
+   
 const http = axios.create({
   baseURL: "http://localhost:8000/api",
   headers: {
