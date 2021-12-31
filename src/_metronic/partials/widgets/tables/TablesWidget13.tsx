@@ -19,24 +19,6 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
   const location = useLocation();
   const history = useHistory();
 
-
-  const fetchStocks = async () => {
-
-    try {
-      let res = await http.get('/stocks');
-
-      if (res) {
-        dispatch(addStock(res.data))
-      }
-
-    } catch (error: any) {
-      console.log(error);
-      alert('Network error loading stocks data. please refresh the page.')
-    }
-  }
-
-
-
   return (
     <div className={`card ${className}`}>
       {/* begin::Header */}
@@ -76,26 +58,19 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                 <th className='min-w-120px'>kg</th>
                 <th className='min-w-120px'>Metre Run</th>
                 <th className='min-w-120px'>Balance</th>
-
-                {/* <th className='min-w-120px'>Date Out</th>
-                <th className='min-w-100px'>Metre Out</th>
-                <th className='min-w-150px'>Issued By</th>
-                <th className='min-w-150px'>Issued To</th>
-                <th className='min-w-120px'>Cost</th>
-                <th className='min-w-120px text-end'>Balance</th> */}
               </tr>
             </thead>
             {/* end::Table head */}
             {/* begin::Table body */}
-            <tbody>
-              {stocks ?
-                stocks?.map((data: any) => {
+            <tbody>  
+              {stocks.length ?
+                stocks.map((data: any) => {
 
                   return (
-                    <tr>
+                    <tr style={{ background: +data.balance === 0 ? 'lightcoral' : 'unset' }}>   
                       <td>
                         <span className='text-dark fw-bolder fs-6'>
-                          Row {data.id}
+                          Roll {data.id}
                         </span>
                       </td>
                       <td>
@@ -118,48 +93,7 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                         <span className='text-dark fw-bolder fs-6'>
                           {data.balance} mtr
                         </span>
-
                       </td>
-
-                      {/* <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        {data.updated_at}
-                      </span>
-                    </td>
-                    <td className='text-dark fw-bolder fs-6'>{data.metre_out} mtr</td>
-                    <td>
-                      <div className='d-flex align-items-center' style={{ pointerEvents: 'none' }}>
-                        <div className='symbol symbol-30px me-3'>
-                          <img src={toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
-                        </div>
-                        <div className='d-flex justify-content-start flex-column'>
-                          <a href='#' className='text-dark fw-bolder fs-6'>
-                            {data.issued_by}
-                          </a>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>{data.issued_to}</span>
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                      ₦{data.cost}
-                      </span>
-                    </td>
-                    <td className='text-end'>
-                      {/* <a
-                       href='#'
-                       className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                     >
-                       <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                     </a>
-                     <a href='#' className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'>
-                       <KTSVG path='/media/icons/duotune/general/gen027.svg' className='svg-icon-3' />
-                     </a> 
-                      <span className='text-dark fw-bolder fs-6'>{data.balance}</span>
-    
-                    </td> */}
                     </tr>
                   )
                 }) :

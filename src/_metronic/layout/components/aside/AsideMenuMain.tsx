@@ -12,7 +12,7 @@ export function AsideMenuMain() {
     <>
       <AsideMenuItem
         to='/dashboard'
-        icon='/media/icons/duotune/art/art002.svg'
+        icon='/media/icons/duotune/layouts/lay004.svg'
         title={intl.formatMessage({ id: 'MENU.DASHBOARD' })}
         fontIcon='bi-app-indicator'
       />
@@ -31,6 +31,7 @@ export function AsideMenuMain() {
       <AsideMenuItem to='/crafted/pages/stocks' title='Stocks' icon='/media/icons/duotune/art/art002.svg'/>
 
       <AsideMenuItem to='/crafted/pages/sales' title='Sales' icon='/media/icons/duotune/graphs/gra001.svg'/>
+      <AsideMenuItem to='/crafted/pages/ledgers' title='Ledgers' icon='/media/icons/duotune/coding/cod002.svg'/>  
 
       {/* <AsideMenuItemWithSub
         to='/crafted/pages'

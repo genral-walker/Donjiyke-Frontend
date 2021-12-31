@@ -1,5 +1,6 @@
 
 import { combineReducers } from 'redux';
+import ledgersReducer from './ledgers';
 import salesReducer from './sales';
 import stocksReducer from './stocks';
 import userReducer from './user';
@@ -9,7 +10,8 @@ const rootReducer = combineReducers({
   user: userReducer,
   sales: salesReducer,
   stocks: stocksReducer,
-  users: usersReducer       
+  users: usersReducer,
+  ledgers: ledgersReducer       
 });
 
 

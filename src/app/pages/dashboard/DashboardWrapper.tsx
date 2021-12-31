@@ -8,7 +8,8 @@ import {
   TablesWidget10,
   SalesTable
 } from '../../../_metronic/partials/widgets'
-
+import { Ledgers } from '../../../_metronic/partials/widgets/tables/Ledgers'   
+   
 
 
 const DashboardPage: FC = () => (
@@ -30,6 +31,12 @@ const DashboardPage: FC = () => (
     <div className='row gy-5 g-xl-8'>
       <TablesWidget13
         className='card-xxl-stretch-50 mb-14 mb-xl-18'
+      />
+    </div>
+     
+    <div className='row gy-5 g-xl-8'>
+      <Ledgers
+        className='card-xxl-stretch-50 mb-14 mb-xl-18'    
       />
     </div>
 

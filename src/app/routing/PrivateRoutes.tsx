@@ -1,5 +1,6 @@
 import React, { Suspense, lazy, useEffect } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
+import { loadLedgers } from '../../setup/redux/reducers/ledgers'
 import { addSales } from '../../setup/redux/reducers/sales'
 import { addStock } from '../../setup/redux/reducers/stocks'
 import { addUser } from '../../setup/redux/reducers/users'
@@ -22,6 +23,7 @@ export function PrivateRoutes() {
   const ChatPage = lazy(() => import('../modules/apps/chat/ChatPage'))
   const StocksPage = lazy(() => import('../modules/stocks/StocksPage'))
   const SalesPage = lazy(() => import('../modules/sales/SalesPage'))
+  const LedgersPage = lazy(() => import('../modules/ledgers/LedgersPage'))
 
   const fetchUIs = async () => {
     let data: any;
@@ -31,24 +33,28 @@ export function PrivateRoutes() {
         const res = await Promise.all([
           http.get('/sales'),
           http.get('/stocks'),
-          http.get('/users')
+          http.get('/users'),
+          http.get('/ledgers')
         ]);
 
-        data = { sales: res[0].data, stocks: res[1].data, users: res[2].data };
+        data = { sales: res[0].data, stocks: res[1].data, users: res[2].data, ledgers: res[3].data };    
         dispatch(addSales(data.sales))
         dispatch(addStock(data.stocks))
         dispatch(addUser(data.users))
+        dispatch(loadLedgers(data.ledgers))
 
       } else {
 
         const res = await Promise.all([   
           http.get('/sales'),
-          http.get('/stocks')
+          http.get('/stocks'),
+          http.get('/ledgers')
         ]);
 
-        data = { sales: res[0].data, stocks: res[1].data };
+        data = { sales: res[0].data, stocks: res[1].data, ledgers: res[2].data };
         dispatch(addSales(data.sales))
         dispatch(addStock(data.stocks))
+        dispatch(loadLedgers(data.ledgers))
       }
       
     } catch (err) {
@@ -75,6 +81,7 @@ export function PrivateRoutes() {
         <Route path='/menu-test' component={MenuTestPage} />
         <Route path='/crafted/pages/stocks' component={StocksPage} />
         <Route path='/crafted/pages/sales' component={SalesPage} />
+        <Route path='/crafted/pages/ledgers' component={LedgersPage} />   
         <Redirect from='/auth' to='/dashboard' />
         <Redirect exact from='/' to='/dashboard' />
         <Redirect to='error/404' />

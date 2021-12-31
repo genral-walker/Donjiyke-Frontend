@@ -1,17 +1,17 @@
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { css } from 'styled-components'
 import { useHistory, useLocation } from 'react-router'
 import { addSales } from '../../../../setup/redux/reducers/sales'
 // import { saveSales } from '../../../../setup/redux/sales/salesActions'
 import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
-import { KTSVG, toAbsoluteUrl } from '../../../helpers'    
+import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 // SALES COMPONENT    
 
-type Props = {    
-  className: string 
-}   
+type Props = {
+  className: string
+}
 
 const thStyles = css`
 
@@ -27,22 +27,15 @@ const SalesTable: React.FC<Props> = ({ className }) => {
 
   const dispatch = useAppDispatch();
   const sales = useAppSelector(state => state.sales);
-
-
-  const fetchSales = async () => {
-
-    try {
-      let res = await http.get('/sales');
-
-      if (res) {
-        dispatch(addSales(res.data))
-      }
-
-    } catch (error: any) {
-      console.log(error.message ?? error)
-      alert('Network error loading sales data. Please refresh the page.')
-    }
+  const stocks = useAppSelector(state => state.stocks);
+  const nonDuplicate = (value: any, index: number, self: any) => {
+    return self.indexOf(value) === index;
   }
+
+  const targetedRolls = useMemo(() => sales.map((sale: any) => sale.target_roll).filter(nonDuplicate), [sales]);
+
+  const segmentedRollsObj = useMemo(() => targetedRolls.reduce((o: any, key: any) => ({ ...o, [key]: sales.filter((sale: any) => sale.target_roll === key) }), {}), [targetedRolls])
+
 
   return (
     <div className={`card ${className}`}>
@@ -73,9 +66,8 @@ const SalesTable: React.FC<Props> = ({ className }) => {
         {/* begin::Table container */}
         <div className='table-responsive'>
           {/* begin::Table */}
-          <div className="border-bottom border-gray-400 text-center mb-5"><th className='text-gray-900 card-label fw-bolder fs-6 d-block my-3'>ROW 1</th></div>
           <table className='table table-row-bordered table-row-gray-400 align-middle gs-0 gy-3'>
-            {/* begin::Table head */}    
+            {/* begin::Table head */}
             <thead>
               <tr className='fw-bolder text-muted text-gray-700' {...thStyles}>
                 <th className='min-w-50px'>S/N</th>
@@ -91,73 +83,61 @@ const SalesTable: React.FC<Props> = ({ className }) => {
             {/* end::Table head */}
             {/* begin::Table body */}
             <tbody>
-              {sales ?
-                sales?.map((data: any) => {
-                  /*
-                  {
-                          "id": 1,
-                          "material": "sfsfasdsas",
-                          "meter": "23234",
-                          "payment": "23423",
-                          "cost": "2141",
-                          "balance": "2123",
-                          "created_at": "2021-11-09T11:28:08.000000Z",
-                          "updated_at": "2021-11-09T11:28:08.000000Z"
-                      }
-                  */
-                  return (<tr>
-
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        {data.created_at}
-                      </span>
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        {data.material}
-                      </span>
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        {data.meter}
-                      </span>
-
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        ₦{data.payment}
-                      </span>
-                    </td>
-                    <td className='text-dark fw-bolder fs-6'>₦{data.cost}</td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        ₦{data.issuer}
-                      </span>
-                    </td>
-                    <td>
-                      <span className='text-dark fw-bolder fs-6'>
-                        ₦{data.issued_to}
-                      </span>
-                    </td>
-                    <td className='text-end'>
-                      {/* <a
-                     href='#'
-                     className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                   >
-                     <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                   </a>
-                   <a href='#' className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'>
-                     <KTSVG path='/media/icons/duotune/general/gen027.svg' className='svg-icon-3' />
-                   </a> */}
-                      <span className='text-dark fw-bolder fs-6'>₦{data.balance}</span>
-
-                    </td>
-                  </tr>)
-                }) :
-
-                <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Sales Data</h3></td></tr>
-                // <tr style={{ background: 'blue', width: '100% !important' }}> <th scope="row" style={{ margin: '1rem auto', width: '100%', background: 'grey' }}>ROW 1</th></tr>   
+              {Object.keys(segmentedRollsObj).length ? Object.keys(segmentedRollsObj).map((key: any) => {   
+              return (
+                <>
+                 <tr><td colSpan={100}><h3 className='text-gray-900 card-label fw-bolder fs-4 d-block' style={{ margin: '1rem auto', width: 'max-content' }}>Roll {key}</h3></td></tr>
+                 {
+                   segmentedRollsObj[key].map((data: any, idx: number) => {
+                    return (<tr>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {idx + 1}     
+                        </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {stocks[key]?.created_at}
+                        </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.metre_run} mtr
+                        </span>
+    
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.created_at}
+                        </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.metre_out} mtr
+                        </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.issuer}
+                        </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {data.issued_to}
+                        </span>
+                      </td>
+                      <td className='text-end'>
+                        <span className='text-dark fw-bolder fs-6'>{data.balance} mtr</span>
+                      </td>
+                    </tr>)
+                  })
+                 }
+                </>
+              )  
+              }) :
+              <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Sales Data</h3></td></tr>
               }
+          
             </tbody>
             {/* end::Table body */}
           </table>
@@ -169,5 +149,8 @@ const SalesTable: React.FC<Props> = ({ className }) => {
     </div>
   )
 }
+
+/*
+*/
 
 export { SalesTable }

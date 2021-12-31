@@ -54,10 +54,10 @@ const SalesPage: React.FC = () => {
 
     try {
       let res: any = await http.post('/sales', {
-        target_roll: targetRoll, // ID of the role selected from
+        target_roll: targetRoll, 
         metre_run: choosenRoll ? choosenRoll.balance : availableStocks[0]?.balance,
         metre_out: metreOut,
-        balance: `${choosenRoll ? +choosenRoll.balance - +metreOut : availableStocks[0]?.balance - +metreOut}`, // deduct metre out from metre run.
+        balance: `${choosenRoll ? +choosenRoll.balance - +metreOut : availableStocks[0]?.balance - +metreOut}`, 
         issuer: user.email, // if admin, use the status else use the name of the issuer.
         issued_to: issuedTo
       });
@@ -71,9 +71,9 @@ const SalesPage: React.FC = () => {
         dispatch(updateStock(stockUpdated.data))
 
       } catch (error: any) {
+        setLoading(false);
         console.log(error.message ?? error)
         alert('Network error, please try again.')
-        setLoading(false);
       }
 
 
@@ -81,9 +81,9 @@ const SalesPage: React.FC = () => {
       setLoading(false);
 
     } catch (error: any) {
+      setLoading(false)
       console.log(error.message ?? error)
       alert('Network error, please try again.')
-      setLoading(false)
     }
 
   }
@@ -117,8 +117,7 @@ const SalesPage: React.FC = () => {
                   <div
                     className="btn btn-icon btn-sm btn-active-light-primary ms-2"
                     data-bs-dismiss="modal"
-                    aria-label="Close"
-                    onClick={()=> console.log('clikced')}    
+                    aria-label="Close"  
                   >
                     <KTSVG
                       path="/media/icons/duotune/arrows/arr061.svg"
@@ -144,7 +143,7 @@ const SalesPage: React.FC = () => {
                           <span className="required">Select Roll</span>
                         </label>
                         <select onChange={(e) => setChoosenRoll(() => availableStocks.find((stock: any) => `${stock.id}` === e.target.value))} required className="form-control form-control-solid" id="target_roll" aria-label="Select Roll" placeholder="Select which roll to take from.">
-                          {availableStocks && availableStocks.map((stock: any) => <option value={stock.id}>Row {stock.id}</option>)}
+                          {availableStocks && availableStocks.map((stock: any) => <option value={stock.id}>Roll {stock.id}</option>)}
                         </select>
                       </div>
                     </div>
@@ -153,7 +152,7 @@ const SalesPage: React.FC = () => {
                         <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                           <span className="required">Issued To?</span>
                         </label>
-                        <input type="textarea" id="issued_to" required className="form-control form-control-solid" placeholder="Issued to?" />
+                        <textarea required id="issued_to" rows={5} className="form-control form-control-solid" placeholder="Issued to?" style={{ resize: 'none' }}></textarea>
                       </div>
                     </div>
                   </div>

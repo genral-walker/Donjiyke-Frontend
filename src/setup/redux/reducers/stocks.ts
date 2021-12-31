@@ -2,7 +2,8 @@
 const actionTypes = {
   LOAD_STOCKS: 'LOAD_STOCKS',
   STOCKS_ADDED: 'STOCKS_ADDED',
-  STOCK_UPDATED: 'STOCK_UPDATED'
+  STOCK_UPDATED: 'STOCK_UPDATED',
+  NEW_STOCK_ADDED: 'NEW_STOCK_ADDED'
 };
 
 export const addStock = (data: any) => ({
@@ -12,6 +13,11 @@ export const addStock = (data: any) => ({
 
 export const updateStock = (data: any) => ({
   type: actionTypes.STOCK_UPDATED,
+  payload: data
+});
+
+export const addNewStock = (data: any) => ({
+  type: actionTypes.NEW_STOCK_ADDED,
   payload: data
 });
 
@@ -33,11 +39,13 @@ const stocksReducer = (state = INITIAL_STATE, { type, payload }: Action) => {
     case actionTypes.STOCKS_ADDED:
       return [...payload]
 
+    case actionTypes.NEW_STOCK_ADDED:
+      return [...state, payload]
+
     case actionTypes.STOCK_UPDATED:
-      // return state.splice(state.indexOf(payload?.id), 1, payload);
-      const filtred = state.filter((state: any) => state?.id !== payload?.id);  
+      const filtred = state.filter((state: any) => state?.id !== payload?.id);
       const data = [...filtred, payload];
-      return data.sort((a, b) => a.id - b.id);    
+      return data.sort((a, b) => a.id - b.id);
 
     default:
       return state

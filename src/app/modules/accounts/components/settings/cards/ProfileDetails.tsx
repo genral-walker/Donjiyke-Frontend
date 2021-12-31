@@ -59,21 +59,6 @@ const ProfileDetails: React.FC = () => {
       <div id='kt_account_profile_details' className='collapse show'>
         <form onSubmit={formik.handleSubmit} noValidate className='form'>
           <div className='card-body border-top p-9'>
-            <div className='row mb-6'>
-              <label className='col-lg-4 col-form-label fw-bold fs-6'>Avatar</label>
-              <div className='col-lg-8'>
-                <div
-                  className='image-input image-input-outline'
-                  data-kt-image-input='true'
-                  style={{backgroundImage: `url(${toAbsoluteUrl('/media/avatars/blank.png')})`}}
-                >
-                  <div
-                    className='image-input-wrapper w-125px h-125px'
-                    style={{backgroundImage: `url(${toAbsoluteUrl(data.avatar)})`}}
-                  ></div>
-                </div>
-              </div>
-            </div>
 
             <div className='row mb-6'>
               <label className='col-lg-4 col-form-label required fw-bold fs-6'>Full Name</label>
@@ -112,25 +97,6 @@ const ProfileDetails: React.FC = () => {
             </div>
 
             <div className='row mb-6'>
-              <label className='col-lg-4 col-form-label required fw-bold fs-6'>Avatar</label>
-
-              <div className='col-lg-8 fv-row'>
-                <input
-                type='image'
-                      alt='Image'
-                  className='form-control form-control-lg form-control-solid'
-                  placeholder='Input Image'
-                  {...formik.getFieldProps('company')}
-                />
-                {formik.touched.company && formik.errors.company && (
-                  <div className='fv-plugins-message-container'>
-                    <div className='fv-help-block'>{formik.errors.company}</div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className='row mb-6'>
               <label className='col-lg-4 col-form-label fw-bold fs-6'>
                 <span className='required'>Contact Phone</span>
               </label>
@@ -147,20 +113,6 @@ const ProfileDetails: React.FC = () => {
                     <div className='fv-help-block'>{formik.errors.contactPhone}</div>
                   </div>
                 )}
-              </div>
-            </div>
-
-            <div className='row mb-6'>
-              <label className='col-lg-4 col-form-label fw-bold fs-6'>
-                <span className='required'>Address</span>
-              </label>
-
-              <div className='col-lg-8 fv-row'>
-                <input
-                  type='text'
-                  className='form-control form-control-lg form-control-solid'
-                  placeholder='Phone number'
-                />
               </div>
             </div>
 

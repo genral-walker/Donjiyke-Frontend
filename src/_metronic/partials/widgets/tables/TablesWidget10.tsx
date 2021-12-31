@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
-import { addUser } from '../../../../setup/redux/reducers/users';
+import { addNewUSer, addUser } from '../../../../setup/redux/reducers/users';
 import http, { useAppSelector, useAppDispatch } from '../../../../setup/redux/useRedux';
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 
@@ -16,6 +16,7 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.users);
   const user = useAppSelector(state => state.user);
+  const [loading, setLoading] = useState(false);
 
   const location = useLocation();
 
@@ -31,10 +32,10 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
     }
     return (document.getElementById('password') as HTMLInputElement).value = randomString;
   }
-     
+
 
   const editUser = (id: any) => {
-  return console.log(id, ' :ID');   
+    return console.log(id, ' :ID');
     // if (evt.target.id === 'edit-user') {
     //   console.log('eddiiiiitttt')
     // } else if (evt.target.id === 'delete-user"') {
@@ -52,22 +53,11 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
   };
 
 
-  const fetchUsers = async () => {
-    try {
-      let res = await http.get('/users');
-      if (res) {
-        dispatch(addUser(res.data))
-      }
-
-    } catch (error: any) {
-      console.log(error.message ?? error);
-      alert('Network error loading users, please reload the page.')      
-    }
-  }
 
   const createUSer = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {
     evt.preventDefault();
     evt.target.style.pointerEvents = 'none';
+    setLoading(true);
 
     try {
       let res: any = await http.post('/create', {
@@ -75,21 +65,23 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
         password: `${(document.getElementById('password') as HTMLInputElement).value}`
       });
 
-      if (res) {
-        alert('User created successfully!!')
-        evt.target.reset();
-        evt.target.style.pointerEvents = 'all';
-        fetchUsers();
-      }
+      dispatch(addNewUSer(res.data)) 
+      setLoading(false);
+      evt.target.reset();
+      alert('User created successfully!!')
+      evt.target.style.pointerEvents = 'all';
+
 
     } catch (error: any) {
+      setLoading(false);
       console.log(error.message ?? error);
       alert('Error creating user, please try again.');
-      evt.target.style.pointerEvents = 'all';   
+      evt.target.style.pointerEvents = 'all';
     }
   }
 
-  return ( 
+  return (
+    
     <div className={`card ${className}`} style={{ display: user.role === 'admin' ? 'unset' : 'none' }}>
       {/* begin::Header */}
       <div className='card-header border-0 pt-5'>
@@ -171,7 +163,7 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
 
                           className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
                           id="edit-user"
-                          onClick={()=> editUser(data.id)}
+                          onClick={() => editUser(data.id)}
                         // 
                         >
                           <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
@@ -255,8 +247,14 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
                 >
                   Close
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  Submit
+                <button type="submit" className="btn btn-primary" disabled={loading}>
+                  {!loading && <span className='indicator-label'>Submit</span>}
+                  {loading && (
+                    <span className='indicator-progress' style={{ display: 'block' }}>
+                      Submitting...
+                      <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
+                    </span>
+                  )}
                 </button>
               </div>
             </div>
