@@ -34,7 +34,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
           data-bs-toggle='tooltip'
           data-bs-placement='top'
           data-bs-trigger='hover'
-          title='Go to Stocks Page'
+          title='Go to Ledgers Page'
         >
           {
             location.pathname === '/dashboard' &&

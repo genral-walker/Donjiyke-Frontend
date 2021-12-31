@@ -21,7 +21,6 @@ const accountBreadCrumbs: Array<PageLink> = [
   },
 ]
 /*
-Add New Stock
 STOCKS PAGE
 */
 const StocksPage: React.FC = () => {
@@ -32,12 +31,17 @@ const StocksPage: React.FC = () => {
     evt.preventDefault();
     setLoading(true);
 
+    const formData = {
+      kg: (document.getElementById('kg') as HTMLInputElement).value,
+      metre_run: (document.getElementById('metre-run') as HTMLInputElement).value,
+      balance: (document.getElementById('metre-run') as HTMLInputElement).value,
+      colour: (document.getElementById('colour') as HTMLInputElement).value,
+      description: (document.getElementById('description') as HTMLInputElement).value,
+    }
+    
+    
     try {
-      let res: any = await http.post('/stocks', {
-        kg: (document.getElementById('kg') as HTMLInputElement).value,
-        metre_run: (document.getElementById('metre-run') as HTMLInputElement).value,
-        balance: (document.getElementById('metre-run') as HTMLInputElement).value,
-      });
+      let res: any = await http.post('/stocks', formData);
 
       dispatch(addNewStock(res.data));
       setLoading(false)
@@ -72,7 +76,7 @@ const StocksPage: React.FC = () => {
         <div className="modal fade" tabIndex={-1} id="kt_modal_1">
 
           <form onSubmit={submitStock}>
-            <div className="modal-dialog" style={{ maxWidth: '500px' }}>
+            <div className="modal-dialog" style={{ maxWidth: '700px' }}>
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">Add New Stock</h5>
@@ -90,8 +94,8 @@ const StocksPage: React.FC = () => {
 
                 <div className="modal-body">
 
-                  <div className="row g-9 mb-8">
-                    <div className="col-md-6 fv-row">
+                  <div className="row g-3 mb-8">
+                    <div className="col-md-4 fv-row">
                       <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                         <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                           <span className="required">Kg</span>
@@ -100,13 +104,32 @@ const StocksPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="col-md-6 fv-row">
+                    <div className="col-md-4 fv-row">
                       <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
                         <label className="d-flex align-items-center fs-6 fw-bold mb-2">
                           <span className="required">Metre Run</span>
                         </label>
 
                         <input type="number" id="metre-run" min={0} required className="form-control form-control-solid" placeholder="Enter Metre Run" />
+                      </div>
+                    </div>
+
+                    <div className="col-md-4 fv-row">
+                      <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                          <span className="required">Roll Colour</span>
+                        </label>
+  
+                        <input style={{ height: '44px' }} type="color" id="colour" required className="form-control form-control-solid" placeholder="Select Colour" />
+                      </div>
+                    </div>
+
+                    <div className="col fv-row">
+                      <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                          <span className="required">Description</span>   
+                        </label>
+                        <textarea style={{ resize: 'none' }} name="description" id="description" rows={3} required className="form-control form-control-solid" placeholder="Enter Description"></textarea>
                       </div>
                     </div>
                   </div>

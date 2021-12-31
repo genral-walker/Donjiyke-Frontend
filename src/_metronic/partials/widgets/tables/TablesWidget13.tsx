@@ -5,6 +5,7 @@ import { useHistory, useLocation } from 'react-router'
 import { addStock } from '../../../../setup/redux/reducers/stocks'
 import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
+import tinycolor from 'tinycolor2';
 
 
 type Props = {
@@ -18,6 +19,11 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
 
   const location = useLocation();
   const history = useHistory();
+
+  const returnBlackOrWhite = (value: string): string => {
+    const color = tinycolor(value);
+    return color.getBrightness() >= 120 ? 'text-dark' : 'text-light-dark';
+  }
 
   return (
     <div className={`card ${className}`}>
@@ -57,40 +63,46 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                 <th className='min-w-120px'>Date In</th>
                 <th className='min-w-120px'>kg</th>
                 <th className='min-w-120px'>Metre Run</th>
+                <th className='min-w-120px'>Description</th>
                 <th className='min-w-120px'>Balance</th>
               </tr>
             </thead>
             {/* end::Table head */}
             {/* begin::Table body */}
-            <tbody>  
+            <tbody>
               {stocks.length ?
                 stocks.map((data: any) => {
 
                   return (
-                    <tr style={{ background: +data.balance === 0 ? 'lightcoral' : 'unset' }}>   
+                    <tr className={returnBlackOrWhite(data.colour)} style={{ background: data.colour}}>
                       <td>
-                        <span className='text-dark fw-bolder fs-6'>
+                        <span className='fw-bolder fs-6'>
                           Roll {data.id}
                         </span>
                       </td>
                       <td>
-                        <span className='text-dark fw-bolder fs-6'>
+                        <span className='fw-bolder fs-6'>
                           {data.created_at}
                         </span>
                       </td>
                       <td>
-                        <span className='text-dark fw-bolder fs-6'>
+                        <span className='fw-bolder fs-6'>
                           {data.kg} kg
                         </span>
                       </td>
                       <td>
-                        <span className='text-dark fw-bolder fs-6'>
+                        <span className='fw-bolder fs-6'>
                           {data.metre_run} mtr
                         </span>
 
                       </td>
                       <td>
-                        <span className='text-dark fw-bolder fs-6'>
+                        <span className='fw-bolder fs-6'>
+                          {data.description}   
+                        </span>
+                      </td>
+                      <td>
+                        <span className='fw-bolder fs-6'>
                           {data.balance} mtr
                         </span>
                       </td>

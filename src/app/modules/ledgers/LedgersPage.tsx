@@ -38,7 +38,8 @@ const LedgersPage: React.FC = () => {
       balance: ''
     }
 
-
+    // WE HAVE TO ADD ISSUED BY LATER
+    
     if (formData.payment) {
       formData.balance = ledgers.length ? `${((+ledgers[ledgers.length - 1]?.balance) + (+formData.cost)) - (+formData.payment)}` : `${+formData.cost - +formData.payment}`;
     } else {
@@ -64,7 +65,7 @@ const LedgersPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle breadcrumbs={accountBreadCrumbs}>Stocks Page</PageTitle>
+      <PageTitle breadcrumbs={accountBreadCrumbs}>Ledgers Page</PageTitle>
       <div className='row gy-5 g-xl-8'>
         <Ledgers
           className='card-xxl-stretch-50 mb-14 mb-xl-18'
