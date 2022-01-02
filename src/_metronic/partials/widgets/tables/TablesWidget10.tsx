@@ -5,6 +5,7 @@ import { addNewUSer, addUser } from '../../../../setup/redux/reducers/users';
 import http, { useAppSelector, useAppDispatch } from '../../../../setup/redux/useRedux';
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 
+
 type Props = {
   className: string
 }
@@ -16,6 +17,7 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
   const dispatch = useAppDispatch();
   const users = useAppSelector(state => state.users);
   const user = useAppSelector(state => state.user);
+  const [deleting, setDeleting] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const location = useLocation();
@@ -34,26 +36,6 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
   }
 
 
-  const editUser = (id: any) => {
-    return console.log(id, ' :ID');
-    // if (evt.target.id === 'edit-user') {
-    //   console.log('eddiiiiitttt')
-    // } else if (evt.target.id === 'delete-user"') {
-    //   console.log('deleteeee')
-    // }
-  };
-
-  const deleteUser = (evt: React.MouseEventHandler<HTMLAnchorElement> | any) => {
-    // console.log(evt.target);
-    // if (evt.target.id === 'edit-user') {
-    //   console.log('eddiiiiitttt')
-    // } else if (evt.target.id === 'delete-user"') {
-    //   console.log('deleteeee')
-    // }    
-  };
-
-
-
   const createUSer = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {
     evt.preventDefault();
     evt.target.style.pointerEvents = 'none';
@@ -65,7 +47,7 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
         password: `${(document.getElementById('password') as HTMLInputElement).value}`
       });
 
-      dispatch(addNewUSer(res.data)) 
+      dispatch(addNewUSer(res.data))
       setLoading(false);
       evt.target.reset();
       alert('User created successfully!!')
@@ -80,9 +62,28 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
     }
   }
 
+  const deleteUser = async (id: string) => {
+    const comfirmed = window.confirm('Are you sure you want to delete this user?');
+    if (comfirmed) {
+      setDeleting(true);
+      try {
+        const res = await http.delete(`/users/${id}`)
+        if (res) {
+          const datas = await http.get('/users');
+          dispatch(addUser(datas.data));
+          setDeleting(false);   
+        }
+      } catch (error: any) {
+        setDeleting(false);   
+        console.log(error);
+        alert('Network Error, Please try again.')
+      }
+    }
+  };
+
+     
   return (
-    
-    <div className={`card ${className}`} style={{ display: user.role === 'admin' ? 'unset' : 'none' }}>
+    <div className={`card ${className}`} style={{ display: user.role === 'admin' ? 'unset' : 'none', pointerEvents: deleting ? 'none' : 'all' }}>
       {/* begin::Header */}
       <div className='card-header border-0 pt-5'>
         <h3 className='card-title align-items-start flex-column'>
@@ -131,19 +132,19 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
             <tbody>
 
 
-              {users && users.map((data: any) => {
+              {users.length ? users.map((data: any) => {
                 return (
-                  <tr key={data.id} id={data.id} onClick={editUser}>
+                  <tr key={data.id}>
                     <td>
                       <div className='d-flex align-items-center'>
-                        <div className='symbol symbol-45px me-5'>
+                        <div className='symbol symbol-35px me-5'>
                           <img src={data.image_path ? data.image_path : toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
                         </div>
                         <div className='d-flex justify-content-start flex-column'>
-                          <a className='text-dark fw-bolder text-hover-primary fs-6'>
+                          <a className='text-dark fw-bolder text-hover-primary fs-6' style={{ textTransform: 'capitalize' }}>        
                             {data?.name}
                           </a>
-                          <span className='text-muted fw-bold text-muted d-block fs-7'>
+                          <span className='text-muted fw-bold text-muted d-block fs-7' style={{ textTransform: 'capitalize' }}>
                             {data.role}
                           </span>
                         </div>
@@ -159,32 +160,26 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
                     </td>
                     <td>
                       <div className='d-flex justify-content-end flex-shrink-0'>
-                        <a
+                        {data.role !== 'admin' &&
+                          <a
 
-                          className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1'
-                          id="edit-user"
-                          onClick={() => editUser(data.id)}
-                        // 
-                        >
-                          <KTSVG path='/media/icons/duotune/art/art005.svg' className='svg-icon-3' />
-                        </a>
-                        <a
-
-                          className='btn btn-icon btn-bg-light btn-active-color-primary btn-sm'
-                          id="delete-user"
-                          onClick={deleteUser}
-
-                        >
-                          <KTSVG
-                            path='/media/icons/duotune/general/gen027.svg'
-                            className='svg-icon-3'
-                          />
-                        </a>
+                            className='btn btn-icon btn-bg-light btn-active-color-danger btn-sm'
+                            id="delete-user"
+                            onClick={() => deleteUser(data.id)}
+                          >
+                            <KTSVG
+                              path='/media/icons/duotune/general/gen027.svg'
+                              className='svg-icon-3'
+                            />
+                          </a>
+                        }
                       </div>
                     </td>
                   </tr>
                 )
-              })}
+              }) :
+                <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Users Data</h3></td></tr>
+              }
             </tbody>
             {/* end::Table body */}
           </table>

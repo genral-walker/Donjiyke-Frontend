@@ -14,7 +14,8 @@ const HeaderUserMenu: FC = () => {
     try {
       http.post('/logout').then(() => dispatch(logOut()))
     } catch (error: any) {
-      alert('Please try again.')
+      http.post('/logout');
+      dispatch(logOut());
     }
   }
 
@@ -56,10 +57,10 @@ const HeaderUserMenu: FC = () => {
       </div> */}
 
       <div className='menu-item px-5' onClick={signOut}>
-        <Link to='/logout' className='menu-link px-5'>
-          Sign Out
-        </Link>
-      </div>
+        <span className='menu-link px-5'>
+          Sign Out   
+        </span>
+      </div>   
     </div>
   )
 }

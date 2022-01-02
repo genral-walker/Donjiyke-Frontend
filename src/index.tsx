@@ -25,7 +25,7 @@ import './_metronic/assets/sass/style.react.scss'
 import { loginIn } from './setup/redux/reducers/user'
          
 const user = localStorage.getItem('user'); 
-if (user && !store.getState().user.auth.accessToken) {   
+if (user && !store.getState().user.auth.accessToken) { 
   store.dispatch(loginIn(JSON.parse(user))) 
 }
 
