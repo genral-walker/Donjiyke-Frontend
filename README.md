@@ -4,7 +4,7 @@ Chnaging the state to use redux, for sales ands stocks instead to localstorage.
 TRYING TO implement sales automatically deducting from active stock.   
 - set loaders whenevr users aee submitting inputs... stocks, sales, profile, users.
  -->   
-
+<!-- Do-MM-YYYY, h:mm A -->
 # Getting Started with Create React App
 
  - user must set name before they can fill the form

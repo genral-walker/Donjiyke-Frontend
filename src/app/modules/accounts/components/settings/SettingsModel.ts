@@ -66,7 +66,7 @@ export const profileDetailsInitValues: IProfileDetails = {
   fName: '',
   lName: '',
   contactPhone: '',
-  email: '',  
+  email: '',     
 }
 
 export const updateEmail: IUpdateEmail = {

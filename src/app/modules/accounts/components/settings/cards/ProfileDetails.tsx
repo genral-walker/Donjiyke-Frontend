@@ -1,49 +1,67 @@
-import React, { useMemo, useState } from 'react'
-import { toAbsoluteUrl } from '../../../../../../_metronic/helpers'
-import { IProfileDetails, profileDetailsInitValues as initialValues } from '../SettingsModel'
+import React, {useEffect, useMemo, useState} from 'react'
+import {toAbsoluteUrl} from '../../../../../../_metronic/helpers'
+import {IProfileDetails, profileDetailsInitValues as initialValues} from '../SettingsModel'
 import * as Yup from 'yup'
-import { useFormik } from 'formik'
-import http, { useAppDispatch, useAppSelector } from '../../../../../../setup/redux/useRedux'
-import { updateProfile } from '../../../../../../setup/redux/reducers/user'
-import { addUser } from '../../../../../../setup/redux/reducers/users'
+import {useFormik} from 'formik'
+import http, {useAppDispatch, useAppSelector} from '../../../../../../setup/redux/useRedux'
+import {updateProfile} from '../../../../../../setup/redux/reducers/user'
+import {addUser} from '../../../../../../setup/redux/reducers/users'
 
 const profileDetailsSchema = Yup.object().shape({
-  fName: Yup.string().required('First name is required'),
-  lName: Yup.string().required('Last name is required'),
-  contactPhone: Yup.number().required('Phone number is required'),
-  email: Yup.string().email('Please input a valid email').required('Email is required')
+  fName: Yup.string(),
+  lName: Yup.string(),
+  contactPhone: Yup.number(),
+  email: Yup.string().email('Please input a valid email'),
 })
 
 const ProfileDetails: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const user = useAppSelector(state => state.user)
+  const dispatch = useAppDispatch()
+  const user = useAppSelector((state) => state.user)
   const [loading, setLoading] = useState(false)
-                
 
   const formik = useFormik<IProfileDetails>({
-    initialValues, 
+    initialValues,
     enableReinitialize: true,
     validationSchema: profileDetailsSchema,
     onSubmit: async (values) => {
-      setLoading(true);
-      const formData = {
-        name: values.fName + ' ' + values.lName,
-        mobile: values.contactPhone,
-        email: values.email
-      };
-      try {
-        const updatedInfo = await http.patch(`/users/${user.id}`, formData)
-        dispatch(updateProfile(updatedInfo.data));
-        const usersData = await http.get('/users')
-        dispatch(addUser(usersData.data));
-        setLoading(false);
-        alert('Account Details updated!')
-      } catch (error) {
-        setLoading(false);
-        console.log(error);
-        alert('Network Error, Please try again')
-      }
+      if (values.fName || values.lName || values.contactPhone || values.email) {
+        setLoading(true)
+        const getName = () => {
+          let name = ''
+          if (values.fName) {
+            name = values.fName
+          } else {
+            name = user.name ? user.name.split(' ').slice(0, 1).join(' ') : ''
+          }
 
+          if (values.lName) {
+            name += ` ${values.lName}`
+          } else {
+            name += user.name ? ` ${user.name.split(' ').slice(1).join(' ')}` : ''
+          }
+
+          return name
+        }
+        const formData = {
+          name: getName(),
+          mobile: values.contactPhone ? values.contactPhone : user.mobile ? user.mobile : '',
+          email: values.email ? values.email : user.email ? user.email : '',
+        }
+        try {
+          const updatedInfo = await http.patch(`/users/${user.id}`, formData)
+          dispatch(updateProfile(updatedInfo.data))
+          const usersData = await http.get('/users')
+          dispatch(addUser(usersData.data))
+          setLoading(false)
+          alert('Account Details updated!')
+        } catch (error) {
+          setLoading(false)
+          console.log(error)
+          alert('Network Error, Please try again')
+        }
+      } else {
+        alert('No Data to submit!')
+      }
     },
   })
 
@@ -56,7 +74,7 @@ const ProfileDetails: React.FC = () => {
         data-bs-target='#kt_account_profile_details'
         aria-expanded='true'
         aria-controls='kt_account_profile_details'
-        style={{ pointerEvents: 'none' }}
+        style={{pointerEvents: 'none'}}
       >
         <div className='card-title m-0'>
           <h3 className='fw-bolder m-0'>Account Settings</h3>
@@ -66,9 +84,8 @@ const ProfileDetails: React.FC = () => {
       <div id='kt_account_profile_details' className='collapse show'>
         <form onSubmit={formik.handleSubmit} noValidate className='form'>
           <div className='card-body border-top p-9'>
-
             <div className='row mb-6'>
-              <label className='col-lg-4 col-form-label required fw-bold fs-6'>Full Name</label>
+              <label className='col-lg-4 col-form-label fw-bold fs-6'>Full Name</label>
 
               <div className='col-lg-8'>
                 <div className='row'>
@@ -77,7 +94,7 @@ const ProfileDetails: React.FC = () => {
                       type='text'
                       className='form-control form-control-lg form-control-solid mb-3 mb-lg-0'
                       placeholder='First name'
-                      style={{ textTransform: 'capitalize' }}
+                      style={{textTransform: 'capitalize'}}
                       {...formik.getFieldProps('fName')}
                     />
                     {formik.touched.fName && formik.errors.fName && (
@@ -92,7 +109,7 @@ const ProfileDetails: React.FC = () => {
                       type='text'
                       className='form-control form-control-lg form-control-solid mt-lg-0 mt-5'
                       placeholder='Last name'
-                      style={{ textTransform: 'capitalize' }}
+                      style={{textTransform: 'capitalize'}}
                       {...formik.getFieldProps('lName')}
                     />
                     {formik.touched.lName && formik.errors.lName && (
@@ -107,7 +124,7 @@ const ProfileDetails: React.FC = () => {
 
             <div className='row mb-6'>
               <label className='col-lg-4 col-form-label fw-bold fs-6'>
-                <span className='required'>Phone Number</span>
+                <span className=''>Phone Number</span>
               </label>
 
               <div className='col-lg-8 fv-row'>
@@ -127,7 +144,7 @@ const ProfileDetails: React.FC = () => {
 
             <div className='row mb-6'>
               <label className='col-lg-4 col-form-label fw-bold fs-6'>
-                <span className='required'>Email</span>
+                <span className=''>Email</span>
               </label>
 
               <div className='col-lg-8 fv-row'>
@@ -144,14 +161,13 @@ const ProfileDetails: React.FC = () => {
                 )}
               </div>
             </div>
-
           </div>
 
           <div className='card-footer d-flex justify-content-end py-6 px-9'>
             <button type='submit' className='btn btn-primary' disabled={loading}>
               {!loading && 'Save Changes'}
               {loading && (
-                <span className='indicator-progress' style={{ display: 'block' }}>
+                <span className='indicator-progress' style={{display: 'block'}}>
                   Please wait...{' '}
                   <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
                 </span>
@@ -164,4 +180,4 @@ const ProfileDetails: React.FC = () => {
   )
 }
 
-export { ProfileDetails }
+export {ProfileDetails}

@@ -229,7 +229,7 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
                       </button>
                     </label>
 
-                    <input type="text" id="password" required className="form-control form-control-solid mt-2" placeholder="Enter Password" />
+                    <input type="text" id="password" required className="form-control form-control-solid mt-2" placeholder="Or Type In A Desired Password" />
                   </div>
                 </div>
               </div>

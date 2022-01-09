@@ -4,6 +4,7 @@ import {KTSVG} from '../../../../../../_metronic/helpers'
 import * as Yup from 'yup'
 import {useFormik} from 'formik'
 import {IUpdatePassword, IUpdateEmail, updatePassword, updateEmail} from '../SettingsModel'
+import http, { useAppDispatch, useAppSelector } from '../../../../../../setup/redux/useRedux'
 
 const emailFormValidationSchema = Yup.object().shape({
   newEmail: Yup.string()
@@ -18,11 +19,7 @@ const emailFormValidationSchema = Yup.object().shape({
 })
 
 const passwordFormValidationSchema = Yup.object().shape({
-  currentPassword: Yup.string()
-    .min(3, 'Minimum 3 symbols')
-    .max(50, 'Maximum 50 symbols')
-    .required('Password is required'),
-  newPassword: Yup.string()
+  newPassword: Yup.string()   
     .min(3, 'Minimum 3 symbols')
     .max(50, 'Maximum 50 symbols')
     .required('Password is required'),
@@ -34,6 +31,7 @@ const passwordFormValidationSchema = Yup.object().shape({
 })
 
 const SignInMethod: React.FC = () => {
+  const user = useAppSelector(state => state.user)
   const [emailUpdateData, setEmailUpdateData] = useState<IUpdateEmail>(updateEmail)
   const [passwordUpdateData, setPasswordUpdateData] = useState<IUpdatePassword>(updatePassword)
 
@@ -64,13 +62,17 @@ const SignInMethod: React.FC = () => {
       ...passwordUpdateData,
     },
     validationSchema: passwordFormValidationSchema,
-    onSubmit: (values) => {
-      setLoading2(true)
-      setTimeout((values) => {
-        setPasswordUpdateData(values)
-        setLoading2(false)
-        setPasswordForm(false)
-      }, 1000)
+    onSubmit: async (values) => {
+      setLoading2(true);  
+      try { 
+        const updatedInfo = await http.patch(`/users/${user.id}`, {password: values.newPassword})
+        setLoading2(false);
+        alert('Password updated!')
+      } catch (error) {
+        setLoading2(false);
+        console.log(error);
+        alert('Network Error, Please try again')
+      }
     },
   })
 
@@ -102,31 +104,12 @@ const SignInMethod: React.FC = () => {
               className={'flex-row-fluid ' + (!showPasswordForm && 'd-none')}
             >
               <form
-                onSubmit={formik2.handleSubmit}
+                onSubmit={formik2.handleSubmit}     
                 id='kt_signin_change_password'
                 className='form'
                 noValidate
               >
                 <div className='row mb-1'>
-                  <div className='col-lg-4'>
-                    <div className='fv-row mb-0'>
-                      <label htmlFor='currentpassword' className='form-label fs-6 fw-bolder mb-3'>
-                        Current Password
-                      </label>
-                      <input
-                        type='password'
-                        className='form-control form-control-lg form-control-solid '
-                        id='currentpassword'
-                        {...formik2.getFieldProps('currentPassword')}
-                      />
-                      {formik2.touched.currentPassword && formik2.errors.currentPassword && (
-                        <div className='fv-plugins-message-container'>
-                          <div className='fv-help-block'>{formik2.errors.currentPassword}</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
                   <div className='col-lg-4'>
                     <div className='fv-row mb-0'>
                       <label htmlFor='newpassword' className='form-label fs-6 fw-bolder mb-3'>

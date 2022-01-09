@@ -33,12 +33,14 @@ const SalesTable: React.FC<Props> = ({ className }) => {
   }
 
   const targetedRolls = useMemo(() => sales.map((sale: any) => sale.target_roll).filter(nonDuplicate), [sales]);
+   
+  const returnStockForKGAndDateReference = (targetRoll: string) => stocks.find(({id} : any) => id === +targetRoll);           
 
   const segmentedRollsObj = useMemo(() => targetedRolls.reduce((o: any, key: any) => ({ ...o, [key]: sales.filter((sale: any) => sale.target_roll === key) }), {}), [targetedRolls])
 
 
   return (
-    <div className={`card ${className}`}>
+    <div className={`card ${className}`}>        
       {/* begin::Header */}
       <div className='card-header border-0 pt-5'>
         <h3 className='card-title align-items-start flex-column'>
@@ -70,12 +72,14 @@ const SalesTable: React.FC<Props> = ({ className }) => {
             {/* begin::Table head */}
             <thead>
               <tr className='fw-bolder text-muted text-gray-700' {...thStyles}>
-                <th className='min-w-50px'>S/N</th>
+                <th className='max-w-50px'>S/N</th>
+                <th className='min-w-50px'>Kg</th>
                 <th className='min-w-120px'>Date In</th>
                 <th className='min-w-120px'>Metre Run</th>
                 <th className='min-w-100px'>Date Out</th>
                 <th className='min-w-100px'>Metre Out</th>
-                <th className='min-w-120px'>Issued By</th>
+                <th className='min-w-100px'>Description</th>
+                <th className='min-w-120px'>Issued By</th>     
                 <th className='min-w-130px'>Issued To</th>
                 <th className='min-w-120px'>Balance</th>
               </tr>
@@ -97,7 +101,12 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                       </td>
                       <td>
                         <span className='text-dark fw-bolder fs-6'>
-                          {stocks[key]?.created_at}
+                          {returnStockForKGAndDateReference(data.target_roll)?.kg} kg        
+                        </span>  
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>
+                          {returnStockForKGAndDateReference(data.target_roll)?.created_at}
                         </span>
                       </td>
                       <td>
@@ -115,6 +124,11 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                         <span className='text-dark fw-bolder fs-6'>
                           {data.metre_out} mtr
                         </span>
+                      </td>
+                      <td>
+                        <span className='text-dark fw-bolder fs-6'>       
+                          {returnStockForKGAndDateReference(data.target_roll)?.description}    
+                        </span>  
                       </td>
                       <td>
                         <span className='text-dark fw-bolder fs-6'>
