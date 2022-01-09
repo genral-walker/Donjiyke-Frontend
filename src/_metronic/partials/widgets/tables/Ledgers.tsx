@@ -91,7 +91,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
                 <th className='min-w-120px'>Material</th>
                 <th className='min-w-120px'>Meter</th>
                 <th className='min-w-120px'>Cost</th>
-                <th className='min-w-120px text-center'>Payment</th>
+                <th className='min-w-120px'>Payment</th> {/*text-center*/}  
                 <th className='min-w-120px'>Balance</th>
               </tr>
             </thead>
@@ -125,10 +125,10 @@ const Ledgers: React.FC<Props> = ({ className }) => {
 
                       </td>
                       <td style={{ maxWidth: '200px' }}>
-                        <span className='text-dark fw-bolder fs-6'>
-                          {/* {data.payment === 'Nill' ? data.payment : '₦' + data.payment} */}
+                        <span className='text-dark fw-bolder fs-6'>  
+                          {data.payment === 'Nill' ? data.payment : '₦' + data.payment}
 
-                          <form className="fv-row" noValidate onSubmit={formik.handleSubmit}>
+                          {/* <form className="fv-row" noValidate onSubmit={formik.handleSubmit}>
                             <div className="d-flex fv-row fv-plugins-icon-container">
                               <input
                                 id="meter"
@@ -208,7 +208,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
                                 </div>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </span>
                       </td>
                       <td>
