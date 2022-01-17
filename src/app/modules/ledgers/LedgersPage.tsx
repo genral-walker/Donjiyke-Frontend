@@ -4,6 +4,7 @@ import { PageLink, PageTitle } from '../../../_metronic/layout/core'
 import http, { useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
 import { addLedger } from '../../../setup/redux/reducers/ledgers'
 import { Ledgers } from '../../../_metronic/partials/widgets/tables/Ledgers'
+import { addPayment } from '../../../setup/redux/reducers/payments'
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -32,7 +33,7 @@ const LedgersPage: React.FC = () => {
     setLoading(true);
     const formData = {
       material: (document.getElementById('material') as HTMLInputElement).value,
-      meter: (document.getElementById('meter') as HTMLInputElement).value,
+      meter: (document.getElementById('mete') as HTMLInputElement).value,   
       payment: (document.getElementById('payment') as HTMLInputElement).value,    
       cost: (document.getElementById('cost') as HTMLInputElement).value,
       balance: ''
@@ -41,14 +42,22 @@ const LedgersPage: React.FC = () => {
     // WE HAVE TO ADD ISSUED BY LATER
     
     if (formData.payment) {
-      formData.balance = ledgers.length ? `${((+ledgers[ledgers.length - 1]?.balance) + (+formData.cost)) - (+formData.payment)}` : `${+formData.cost - +formData.payment}`;
+      formData.balance = `${+formData.cost - +formData.payment}`;
     } else {
       formData.payment = 'Nill';
-      formData.balance = ledgers.length ? `${(+ledgers[ledgers.length - 1]?.balance) + (+formData.cost)}` : formData.cost;
+      formData.balance = formData.cost;
     }
 
     try {
-      let res: any = await http.post('/ledgers', formData);
+      let res: any = await http.post('/ledgers', {...formData, payment: 'Nill'});
+
+      if (formData.payment !== 'Nill') {
+       let paymentRes = await http.post('/payments', {
+          target_ledger: `${res.data.id}`,
+          payment: formData.payment,
+        });
+        dispatch(addPayment(paymentRes.data))
+      }
 
       dispatch(addLedger(res.data));
       setLoading(false)
@@ -117,7 +126,7 @@ const LedgersPage: React.FC = () => {
                           <span className="required">Meter</span>
                         </label>
 
-                        <input type="number" id="meter" step={0.01} min={0} required className="form-control form-control-solid" placeholder="Enter Meter" />
+                        <input type="number" id="mete" step={0.01} min={0} required className="form-control form-control-solid" placeholder="Enter Meter" />
                       </div>
                     </div>
 

@@ -37,10 +37,10 @@ const ledgersReducer = (state = INITIAL_STATE, { type, payload }: Action) => {
     case actionTypes.LEDGER_ADDED:
       return [...state, payload]
 
-    // case actionTypes.STOCK_UPDATED:
-    //   const filtred = state.filter((state: any) => state?.id !== payload?.id);
-    //   const data = [...filtred, payload];
-    //   return data.sort((a, b) => a.id - b.id);
+    case actionTypes.LEDGER_UPDATED:
+      const filtred = state.filter((state: any) => state?.id !== payload?.id);
+      const data = [...filtred, payload];
+      return data.sort((a, b) => a.id - b.id);
 
     default:
       return state

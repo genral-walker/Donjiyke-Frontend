@@ -4,8 +4,8 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from './store'
 import store from './store';    
       
-//http://localhost:8000/api
-// https://donjiyke-api.sqtdemo.com.ng/public/api
+//http://localhost:8000/api 
+// https://api.donjiyke.com/public/api 
 
 const userToken = store.getState().user.auth.accessToken;
 

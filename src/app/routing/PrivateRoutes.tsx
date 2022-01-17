@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useEffect } from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
 import { loadLedgers } from '../../setup/redux/reducers/ledgers'
+import { loadPayments } from '../../setup/redux/reducers/payments'
 import { addSales } from '../../setup/redux/reducers/sales'
 import { addStock } from '../../setup/redux/reducers/stocks'
 import { addUser } from '../../setup/redux/reducers/users'
@@ -34,27 +35,31 @@ export function PrivateRoutes() {
           http.get('/sales'),
           http.get('/stocks'),
           http.get('/users'),
-          http.get('/ledgers')
+          http.get('/ledgers'),
+          http.get('/payments')
         ]);
 
-        data = { sales: res[0].data, stocks: res[1].data, users: res[2].data, ledgers: res[3].data };    
+        data = { sales: res[0].data, stocks: res[1].data, users: res[2].data, ledgers: res[3].data, payments: res[4].data };    
         dispatch(addSales(data.sales))
         dispatch(addStock(data.stocks))
         dispatch(addUser(data.users))
         dispatch(loadLedgers(data.ledgers))
+        dispatch(loadPayments(data.payments))
 
       } else {
 
         const res = await Promise.all([   
           http.get('/sales'),
           http.get('/stocks'),
-          http.get('/ledgers')
+          http.get('/ledgers'),
+          http.get('/payments')
         ]);
 
-        data = { sales: res[0].data, stocks: res[1].data, ledgers: res[2].data };
+        data = { sales: res[0].data, stocks: res[1].data, ledgers: res[2].data, payments: res[3].data };
         dispatch(addSales(data.sales))
         dispatch(addStock(data.stocks))
         dispatch(loadLedgers(data.ledgers))
+        dispatch(loadPayments(data.payments))
       }
       
     } catch (err) {

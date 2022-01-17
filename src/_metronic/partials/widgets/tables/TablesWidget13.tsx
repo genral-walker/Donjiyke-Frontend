@@ -59,12 +59,12 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
             {/* begin::Table head */}
             <thead>
               <tr className='fw-bolder text-muted text-gray-700'>
-                <th className='min-w-60px'>Rolls</th>
-                <th className='min-w-120px'>Date In</th>
-                <th className='min-w-120px'>kg</th>
-                <th className='min-w-120px'>Metre Run</th>
-                <th className='min-w-120px'>Description</th>
-                <th className='min-w-120px'>Balance</th>
+                <th className='min-w-100px'>Rolls</th>
+                <th className='min-w-180px'>Date In</th>
+                <th className='min-w-110px'>kg</th>
+                <th className='min-w-150px'>Metre Run</th>
+                <th className='min-w-170px'>Description</th>
+                <th className='min-w-110px'>Balance</th>
               </tr>
             </thead>
             {/* end::Table head */}
@@ -75,33 +75,33 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
 
                   return (
                     <tr className={returnBlackOrWhite(data.colour)} style={{ background: data.colour}}>
-                      <td>
+                      <td style={{minWidth: '100px', maxWidth: 'max-content'}}>
                         <span className='fw-bolder fs-6'>
                           Roll {data.id}
                         </span>
                       </td>
-                      <td>
+                      <td style={{minWidth: '180px', maxWidth: 'max-content'}}>
                         <span className='fw-bolder fs-6'>
                           {data.created_at}
                         </span>
                       </td>
-                      <td>
+                      <td style={{minWidth: '110px', maxWidth: 'max-content'}}>
                         <span className='fw-bolder fs-6'>
                           {data.kg} kg
                         </span>
                       </td>
-                      <td>
+                      <td style={{minWidth: '150px', maxWidth: 'max-content'}}>
                         <span className='fw-bolder fs-6'>
-                          {data.metre_run} mtr
+                          {data.metre_run} mtr  
                         </span>
 
                       </td>
-                      <td>
+                      <td style={{ minWidth: '170px', maxWidth: '250x' }}>
                         <span className='fw-bolder fs-6'>
                           {data.description}   
                         </span>
                       </td>
-                      <td>
+                      <td style={{ minWidth: '110px', maxWidth: 'max-content' }}>
                         <span className='fw-bolder fs-6'>
                           {data.balance} mtr
                         </span>

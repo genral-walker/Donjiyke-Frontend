@@ -5,6 +5,8 @@ import {SalesTable} from '../../../_metronic/partials/widgets'
 import http, {useAppDispatch, useAppSelector} from '../../../setup/redux/useRedux'
 import {addNewSale, addSales} from '../../../setup/redux/reducers/sales'
 import {updateStock} from '../../../setup/redux/reducers/stocks'
+import { useHistory } from 'react-router-dom'
+
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -24,6 +26,7 @@ const accountBreadCrumbs: Array<PageLink> = [
 // SALES PAGE
 
 const SalesPage: React.FC = () => {
+  const history = useHistory()
   const user = useAppSelector((state) => state.user)
   const stocks = useAppSelector((state) => state.stocks)
   const dispatch = useAppDispatch()
@@ -36,24 +39,23 @@ const SalesPage: React.FC = () => {
   )
 
   const submitSale = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {
-    evt.preventDefault()
+    let issuerData = ''
+    evt.preventDefault()   
+    if (user.role === 'admin') {
+      issuerData = user.role
+    } else {
+      if (user.name) {
+        issuerData = user.name
+      } else {
+       return alert('Please add your name in your account before making a sale!')
+      }
+    }
 
     setLoading(true)
 
     const metreOut = (document.getElementById('meter') as HTMLInputElement).value
     const issuedTo = (document.getElementById('issued_to') as HTMLInputElement).value
     const targetRoll = (document.getElementById('target_roll') as HTMLInputElement).value
-    /*
-    IF the user is admin, allow them to make a sale.
-    else if the user isn't admin...
-      Check if they have filled their name, if yes then allow them make a sale.
-      else prompt them to fill their name first, then direct them to the profile page to fill in their name.
-    */
-    /*
-    STEPS.
-  
-    
-    */
 
     try {
       let res: any = await http.post('/sales', {
@@ -63,7 +65,7 @@ const SalesPage: React.FC = () => {
         balance: `${
           choosenRoll ? +choosenRoll.balance - +metreOut : availableStocks[0]?.balance - +metreOut
         }`,
-        issuer: user.email, // if admin, use the status else use the name of the issuer.
+        issuer: issuerData,
         issued_to: issuedTo,
       })
 

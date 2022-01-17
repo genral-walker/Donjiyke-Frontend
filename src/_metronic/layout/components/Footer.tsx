@@ -11,7 +11,7 @@ const Footer: FC = () => {
         className={`${classes.footerContainer} d-flex flex-column flex-md-row align-items-center justify-content-between`}
       >
         {/* begin::Copyright */}
-        <div className='text-dark order-2 order-md-1'>
+        <div className='text-dark order-2 order-md-1 text-center'>
         <span className='text-muted fw-bold me-2'>{new Date().getFullYear()} &copy;</span> Don Jiyke Aluminium Ltd. 
           &nbsp;
           Made with&nbsp;

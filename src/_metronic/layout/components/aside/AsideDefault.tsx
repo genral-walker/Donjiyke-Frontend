@@ -30,8 +30,9 @@ const AsideDefault: FC = () => {
           <Link to='/dashboard'>
             <img
               alt='Logo'
-              className='h-25px logo'
-              src={toAbsoluteUrl('')}
+              className='h-35px logo'
+              style={{ borderRadius: '6px' }}
+              src={toAbsoluteUrl('/media/donjiyke.jpg')}
             />
           </Link>
         )}

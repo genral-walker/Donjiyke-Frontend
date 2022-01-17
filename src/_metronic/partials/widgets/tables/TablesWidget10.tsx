@@ -135,26 +135,26 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
               {users.length ? users.map((data: any) => {
                 return (
                   <tr key={data.id}>
-                    <td>
+                    <td style={{ minWidth: '200px', maxWidth: 'max-content'}}>
                       <div className='d-flex align-items-center'>
                         <div className='symbol symbol-35px me-5'>
                           <img src={data.image_path ? data.image_path : toAbsoluteUrl('/media/avatars/blank.png')} alt='' />
                         </div>
                         <div className='d-flex justify-content-start flex-column'>
-                          <a className='text-dark fw-bolder text-hover-primary fs-6' style={{ textTransform: 'capitalize' }}>        
+                          <a className='text-dark fw-bolder fs-6' style={{ minWidth: '100px', maxWidth: 'max-content', textTransform: 'capitalize' }}>          
                             {data?.name}
                           </a>
-                          <span className='text-muted fw-bold text-muted d-block fs-7' style={{ textTransform: 'capitalize' }}>
+                          <span className='text-muted fw-bold text-muted d-block fs-7' style={{ minWidth: '100px', maxWidth: 'max-content', textTransform: 'capitalize' }}>
                             {data.role}
                           </span>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <a className='text-dark fw-bolder d-block fs-6'>
+                      <a className='text-dark fw-bolder d-block fs-6' style={{ minWidth: '100px', maxWidth: 'max-content' }}>
                         {data.email}
                       </a>
-                      <span className='text-muted fw-bold text-muted d-block fs-7'>
+                      <span className='text-muted fw-bold text-muted d-block fs-7' style={{ minWidth: '100px', maxWidth: 'max-content' }}>
                         {data?.mobile}
                       </span>
                     </td>

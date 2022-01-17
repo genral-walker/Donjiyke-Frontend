@@ -71,16 +71,16 @@ const SalesTable: React.FC<Props> = ({ className }) => {
           <table className='table table-row-bordered table-row-gray-400 align-middle gs-0 gy-3'>
             {/* begin::Table head */}
             <thead>
-              <tr className='fw-bolder text-muted text-gray-700' {...thStyles}>
-                <th className='max-w-50px'>S/N</th>
-                <th className='min-w-50px'>Kg</th>
-                <th className='min-w-120px'>Date In</th>
+              <tr className='fw-bolder text-muted text-gray-700'>
+                <th className='max-w-60px'>S/N</th>
+                <th className='min-w-120px'>Kg</th>
+                <th className='min-w-180px'>Date In</th>
                 <th className='min-w-120px'>Metre Run</th>
-                <th className='min-w-100px'>Date Out</th>
-                <th className='min-w-100px'>Metre Out</th>
-                <th className='min-w-100px'>Description</th>
-                <th className='min-w-120px'>Issued By</th>     
-                <th className='min-w-130px'>Issued To</th>
+                <th className='min-w-180px'>Date Out</th>
+                <th className='min-w-120px'>Metre Out</th>
+                <th className='min-w-170px'>Description</th>
+                <th className='min-w-180px'>Issued By</th>     
+                <th className='min-w-150px'>Issued To</th>
                 <th className='min-w-120px'>Balance</th>
               </tr>
             </thead>
@@ -90,57 +90,57 @@ const SalesTable: React.FC<Props> = ({ className }) => {
               {Object.keys(segmentedRollsObj).length ? Object.keys(segmentedRollsObj).map((key: any) => {   
               return (
                 <>
-                 <tr><td colSpan={100}><h3 className='text-gray-900 card-label fw-bolder fs-4 d-block' style={{ margin: '1rem auto', width: 'max-content' }}>Roll {key}</h3></td></tr>
+                 <tr><td colSpan={100}><h3 className='text-gray-900 card-label fw-bolder fs-3 d-block' style={{ margin: '2rem 0 1rem 27%', width: 'max-content' }}>Roll {key}</h3></td></tr>
                  {
                    segmentedRollsObj[key].map((data: any, idx: number) => {
                     return (<tr>
-                      <td>
+                      <td style={{ minWidth: '60px'}}>
                         <span className='text-dark fw-bolder fs-6'>
                           {idx + 1}     
                         </span>
                       </td>
-                      <td>
+                      <td style={{ minWidth: '120px' }}>
                         <span className='text-dark fw-bolder fs-6'>
                           {returnStockForKGAndDateReference(data.target_roll)?.kg} kg        
                         </span>  
                       </td>
-                      <td>
+                      <td style={{ minWidth: '180px'}}>
                         <span className='text-dark fw-bolder fs-6'>
                           {returnStockForKGAndDateReference(data.target_roll)?.created_at}
                         </span>
                       </td>
-                      <td>
+                      <td style={{ minWidth: '120px'}}>
                         <span className='text-dark fw-bolder fs-6'>
                           {data.metre_run} mtr
                         </span>
     
                       </td>
-                      <td>
+                      <td style={{ minWidth: '180px'}}>
                         <span className='text-dark fw-bolder fs-6'>
                           {data.created_at}
                         </span>
                       </td>
-                      <td>
+                      <td style={{ minWidth: '120px'}}>
                         <span className='text-dark fw-bolder fs-6'>
                           {data.metre_out} mtr
                         </span>
                       </td>
-                      <td>
+                      <td style={{ minWidth: '170px', maxWidth: '250px' }}>
                         <span className='text-dark fw-bolder fs-6'>       
                           {returnStockForKGAndDateReference(data.target_roll)?.description}    
                         </span>  
                       </td>
-                      <td>
+                      <td  style={{ minWidth: '180px', textTransform: 'capitalize'}}>
                         <span className='text-dark fw-bolder fs-6'>
                           {data.issuer}
                         </span>
                       </td>
-                      <td>
+                      <td style={{ minWidth: '150px', maxWidth: '220px' }}>
                         <span className='text-dark fw-bolder fs-6'>
                           {data.issued_to}
                         </span>
                       </td>
-                      <td className='text-end'>
+                      <td  style={{ minWidth: '120px'}}>
                         <span className='text-dark fw-bolder fs-6'>{data.balance} mtr</span>
                       </td>
                     </tr>)
