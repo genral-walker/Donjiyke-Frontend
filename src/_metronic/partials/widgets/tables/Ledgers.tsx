@@ -1,13 +1,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 // LEDGERS COMPONENT
-import React, {useState, useEffect, useMemo} from 'react'
-import {useHistory, useLocation} from 'react-router'
+import React, { useState, useEffect, useMemo } from 'react'
+import { useHistory, useLocation } from 'react-router'
 import * as Yup from 'yup'
-import {useFormik} from 'formik'
-import http, {useAppDispatch, useAppSelector} from '../../../../setup/redux/useRedux'
-import {KTSVG, toAbsoluteUrl} from '../../../helpers'
-import {addPayment} from '../../../../setup/redux/reducers/payments'
-import {updateLedger} from '../../../../setup/redux/reducers/ledgers'
+import { useFormik } from 'formik'
+import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import { KTSVG, toAbsoluteUrl } from '../../../helpers'
+import { addPayment } from '../../../../setup/redux/reducers/payments'
+import { updateLedger } from '../../../../setup/redux/reducers/ledgers'
 
 type Props = {
   className: string
@@ -21,7 +21,7 @@ const paymentValidationSchema = Yup.object().shape({
   Payment: Yup.number().required().min(3, 'Minimum 3 symbols'),
 })
 
-const Ledgers: React.FC<Props> = ({className}) => {
+const Ledgers: React.FC<Props> = ({ className }) => {
   const dispatch = useAppDispatch()
   const ledgers = useAppSelector((state) => state.ledgers)
   const payments = useAppSelector((state) => state.payments)
@@ -55,19 +55,33 @@ const Ledgers: React.FC<Props> = ({className}) => {
       ),
     [targetLedgers]
   )
+
   const totalPayments = segmentedLedgerssObj[selectedID]?.reduce(
     (a: any, b: any) => a + +b.payment,
     0
   )
-  const currentCost = ledgers.find((ledger: any) => ledger.id === selectedID)?.cost
-  const currentBalance = ledgers.find((ledger: any) => ledger.id === selectedID)?.balance
+  const currentCost = ledgers.find((ledger: any) => ledger.id === selectedID)?.cost;
+  const currentBalance = ledgers.find((ledger: any) => ledger.id === selectedID)?.balance;
+
+  const existingClients = ledgers.map((ledger: any) => ledger?.client).filter(nonDuplicate);
+  const segmentedClientsObj = useMemo(
+    () =>
+      existingClients.reduce(
+        (o: any, key: any) => ({
+          ...o,
+          [key]: ledgers.filter((ledger: any) => ledger.client === key),
+        }),
+        {}
+      ),
+    [existingClients]
+  );
 
   const formik = useFormik<PaymentUpdate>({
     initialValues: {
       Payment: '',
     },
     validationSchema: paymentValidationSchema,
-    onSubmit: async (values, {resetForm}) => {
+    onSubmit: async (values, { resetForm }) => {
       const formData = {
         target_ledger: `${selectedID}`,
         payment: values.Payment,
@@ -86,7 +100,7 @@ const Ledgers: React.FC<Props> = ({className}) => {
       try {
         const res = await http.post(`/payments`, formData)
         if (res) {
-          const ledgerRes = await http.patch(`/ledgers/${selectedID}`, {balance: `${getBalance()}`})
+          const ledgerRes = await http.patch(`/ledgers/${selectedID}`, { balance: `${getBalance()}` })
           dispatch(addPayment(res.data))
           dispatch(updateLedger(ledgerRes.data))
           setLoading(false)
@@ -104,38 +118,37 @@ const Ledgers: React.FC<Props> = ({className}) => {
 
   const determinePaymentInfo = (id: any) => {
     const currentObjArr = segmentedLedgerssObj[id];
-    
+
     switch (currentObjArr?.length) {
       case 0:
       case undefined:
       case false:
-        return 'Nill'
+        return  <span style={{ paddingLeft: '17px' }}>Nill</span>          
       case 1:
-        return <span style={{paddingLeft: '17px'}}>₦{currentObjArr[0]?.payment}</span>   
+        return <span style={{ paddingLeft: '17px' }}>₦{currentObjArr[0]?.payment}</span>
       default:
         if (currentObjArr?.length > 1) {
-          const randNum = Math.floor(Math.random() * 999999) + 1;     
-          console.log(randNum)  
+          const randNum = Math.floor(Math.random() * 999999) + 1;
           return (
             <div className='accordion mt-2' id={`kt_accordion_${randNum}`}>
               <div className='accordion-item border-top'>
-                <h2 className='accordion-header' id={'kt_accordion_'+randNum+'_header_'+randNum}>
+                <h2 className='accordion-header' id={'kt_accordion_' + randNum + '_header_' + randNum}>
                   <button
                     className='accordion-button px-5 py-4 text-dark fw-bolder fs-6 collapsed'
                     type='button'
                     data-bs-toggle='collapse'
-                    data-bs-target={'#kt_accordion_'+randNum+'_body_'+randNum}
+                    data-bs-target={'#kt_accordion_' + randNum + '_body_' + randNum}
                     aria-expanded='false'
-                    aria-controls={'kt_accordion_'+randNum+'_body_'+randNum}
+                    aria-controls={'kt_accordion_' + randNum + '_body_' + randNum}
                   >
                     Payments Info
                   </button>
                 </h2>
                 <div
-                  id={'kt_accordion_'+randNum+'_body_'+randNum}
+                  id={'kt_accordion_' + randNum + '_body_' + randNum}
                   className='accordion-collapse collapse'
-                  aria-labelledby={'kt_accordion_'+randNum+'_header_'+randNum}
-                  data-bs-parent={'#kt_accordion_'+randNum}
+                  aria-labelledby={'kt_accordion_' + randNum + '_header_' + randNum}
+                  data-bs-parent={'#kt_accordion_' + randNum}
                 >
                   <div className='accordion-body px-5 py-0'>
                     <table className='table table-row-bordered table-row-gray-100 align-middle gs-0 gy-4'>
@@ -209,7 +222,7 @@ const Ledgers: React.FC<Props> = ({className}) => {
                 <th className='max-w-170px'>Material</th>
                 <th className='max-w-150px'>Meter</th>
                 <th className='max-w-120px'>Cost</th>
-                <th className='max-w-300px' style={{ paddingLeft: '26px'}}>Payment</th>
+                <th className='max-w-300px' style={{ paddingLeft: '26px' }}>Payment</th>
                 <th className='max-w-110px'>Balance</th>
                 {location.pathname === '/crafted/pages/ledgers' && (
                   <th className='max-w-50px'>Action</th>
@@ -220,95 +233,105 @@ const Ledgers: React.FC<Props> = ({className}) => {
             {/* begin::Table body */}
             <tbody>
               {ledgers.length ? (
-                ledgers.map((data: any) => {
+                Object.keys(segmentedClientsObj).map((key: any) => {
                   return (
-                    <tr>
-                      <td style={{minWidth: '180px', maxWidth: 'max-content'}}>
-                        <span
-                          className='text-dark fw-bolder fs-6' 
-                        >
-                          {data.created_at}
-                        </span>
-                      </td>
-                      <td style={{minWidth: '170px', maxWidth: 'max-content'}}>
-                        <span
-                          className='text-dark fw-bolder fs-6'
-                        >
-                          {data.material}
-                        </span>
-                      </td>
-                      <td style={{minWidth: '150px', maxWidth: 'max-content'}}>
-                        <span
-                          className='text-dark fw-bolder fs-6'
-                        >
-                          {data.meter} mtr
-                        </span>
-                      </td>
-                      <td style={{minWidth: '120px', maxWidth: 'max-content'}}>
-                        <span
-                          className='text-dark fw-bolder fs-6'
-                        >
-                          ₦{data.cost}
-                        </span>
-                      </td>
-                      <td style={{minWidth: '300px', maxWidth: 'max-content'}}>
-                        <span
-                          className='text-dark fw-bolder fs-6'
-                        >
-                          {determinePaymentInfo(data.id)}
-                        </span>
-                      </td>
-                      <td style={{minWidth: '110px', maxWidth: 'max-content'}}>
-                        <span
-                          className='text-dark fw-bolder fs-6'
-                        >
-                          ₦{data.balance}
-                        </span>
-                      </td>
-                      {location.pathname === '/crafted/pages/ledgers' && data.balance != '0' && (
-                        <td style={{minWidth: '50px', maxWidth: 'max-content'}}>
-                          <span
-                            className='text-dark fw-bolder fs-6'
-                            data-bs-toggle='modal'
-                            data-bs-target='#kt_modal_4'
-                            style={{cursor: 'pointer'}}
-                            onClick={() => {
-                              setTitle(data.material)
-                              setSelectedID(data.id)
-                            }}
-                            data-toggle='tooltip'
-                            data-placement='left'
-                            title={`Add payment for ${data.material}`}
-                          >
-                            <KTSVG
-                              path='/media/icons/duotune/general/gen041.svg'
-                              className='svg-icon-3 svg-icon-2x'
-                            />
-                          </span>
-                        </td>
-                      )}
-                    </tr>
-                  )
+                    <>
+                      <tr><td colSpan={100}><h3 className='text-gray-900 card-label fw-bolder fs-3 d-block' style={{ margin: '2rem 0 1.5rem 27%', width: 'max-content', textTransform: 'capitalize' }}>{key}</h3></td></tr>
+                      {
+                        segmentedClientsObj[key].map((data: any) => {
+                          return (
+                            <tr key={data.id}>
+                              <td style={{ minWidth: '180px', maxWidth: 'max-content' }}>
+                                <span
+                                  className='text-dark fw-bolder fs-6'
+                                >
+                                  {data.created_at}
+                                </span>
+                              </td>
+                              <td style={{ minWidth: '170px', maxWidth: 'max-content', textTransform: 'capitalize' }}>
+                                <span
+                                  className='text-dark fw-bolder fs-6'
+                                >
+                                  {data.material}
+                                </span>
+                              </td>
+                              <td style={{ minWidth: '150px', maxWidth: 'max-content' }}>
+                                <span
+                                  className='text-dark fw-bolder fs-6'
+                                >
+                                  {data.meter} mtr
+                                </span>
+                              </td>
+                              <td style={{ minWidth: '120px', maxWidth: 'max-content' }}>
+                                <span
+                                  className='text-dark fw-bolder fs-6'
+                                >
+                                  ₦{data.cost}
+                                </span>
+                              </td>
+                              <td style={{ minWidth: '300px', maxWidth: 'max-content' }}>
+                                <span
+                                  className='text-dark fw-bolder fs-6'
+                                >
+                                  {determinePaymentInfo(data.id)}
+                                </span>
+                              </td>
+                              <td style={{ minWidth: '110px', maxWidth: 'max-content' }}>
+                                <span
+                                  className='text-dark fw-bolder fs-6'
+                                >
+                                  ₦{data.balance}
+                                </span>
+                              </td>
+                              {location.pathname === '/crafted/pages/ledgers' && data.balance != '0' && (
+                                <td style={{ minWidth: '50px', maxWidth: 'max-content' }}>
+                                  <span
+                                    className='text-dark fw-bolder fs-6'
+                                    data-bs-toggle='modal'
+                                    data-bs-target='#kt_modal_4'
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => {
+                                      setTitle(data.material)
+                                      setSelectedID(data.id)
+                                    }}
+                                    data-toggle='tooltip'
+                                    data-placement='left'
+                                    title={`Add payment for ${data.material}`}
+                                  >
+                                    <KTSVG
+                                      path='/media/icons/duotune/general/gen041.svg'
+                                      className='svg-icon-3 svg-icon-2x'
+                                    />
+                                  </span>
+                                </td>
+                              )}
+                            </tr>
+                          )
+                        })
+                      }
+                    </>)
                 })
-              ) : (
-                <tr>
-                  <td colSpan={10}>
-                    <h3 style={{margin: '1rem auto', width: 'max-content'}}>No Ledgers Data</h3>
-                  </td>
-                </tr>
-              )}
+              )
+
+                : (
+                  <tr>
+                    <td colSpan={10}>
+                      <h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Ledgers Data</h3>
+                    </td>
+                  </tr>
+                )}
             </tbody>
             {/* end::Table body */}
           </table>
           {/* end::Table */}
-        </div>
+        </div >
         {/* end::Table container */}
-      </div>
+      </div >
       {/* begin::Body */}
 
-      <div className='modal fade' tabIndex={-1} id='kt_modal_4'>
+      < div className='modal fade' tabIndex={- 1} id='kt_modal_4' >
         <form noValidate onSubmit={formik.handleSubmit} className='pForm'>
-          <div className='modal-dialog' style={{maxWidth: '500px'}}>
+          <div className='modal-dialog' style={{ maxWidth: '500px' }}>
             <div className='modal-content'>
               <div className='modal-header'>
                 <h5 className='modal-title'>Add Payment for {title}</h5>
@@ -351,7 +374,7 @@ const Ledgers: React.FC<Props> = ({className}) => {
                 <button type='submit' className='btn btn-primary' disabled={loading}>
                   {!loading && <span className='indicator-label'>Submit</span>}
                   {loading && (
-                    <span className='indicator-progress' style={{display: 'block'}}>
+                    <span className='indicator-progress' style={{ display: 'block' }}>
                       Submitting...
                       <span className='spinner-border spinner-border-sm align-middle ms-2'></span>
                     </span>
@@ -361,9 +384,9 @@ const Ledgers: React.FC<Props> = ({className}) => {
             </div>
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   )
 }
 
-export {Ledgers}
+export { Ledgers }

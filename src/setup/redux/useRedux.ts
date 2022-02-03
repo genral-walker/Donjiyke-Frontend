@@ -10,7 +10,7 @@ import store from './store';
 const userToken = store.getState().user.auth.accessToken;
 
 const httpFree = axios.create({
-  baseURL: "http://localhost:8000/api"      
+  baseURL: "https://api.donjiyke.com/public/api"      
 });
 
 httpFree.defaults.headers.post["Content-Type"] = "application/json";    
@@ -49,7 +49,7 @@ export {httpFree};
 
    
 const http = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: "https://api.donjiyke.com/public/api",
   headers: {
     Authorization: `Bearer ${userToken}`,
   },

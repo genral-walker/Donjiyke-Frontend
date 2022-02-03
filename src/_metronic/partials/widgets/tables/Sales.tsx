@@ -86,7 +86,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
             </thead>
             {/* end::Table head */}
             {/* begin::Table body */}
-            <tbody>
+            <tbody> 
               {Object.keys(segmentedRollsObj).length ? Object.keys(segmentedRollsObj).map((key: any) => {   
               return (
                 <>
