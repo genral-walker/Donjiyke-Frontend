@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react'
 import { KTSVG } from '../../../_metronic/helpers'
 import { PageLink, PageTitle } from '../../../_metronic/layout/core'
-import http, { useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
+import http, { randomPass, useAppDispatch, useAppSelector } from '../../../setup/redux/useRedux'
 import { addLedger } from '../../../setup/redux/reducers/ledgers'
 import { Ledgers } from '../../../_metronic/partials/widgets/tables/Ledgers'
 import { addPayment } from '../../../setup/redux/reducers/payments'
+import moment from 'moment'
 
 const accountBreadCrumbs: Array<PageLink> = [
   {
@@ -38,6 +39,7 @@ const LedgersPage: React.FC = () => {
     evt.preventDefault()
     setLoading(true)
     const formData = {
+      date: moment((document.getElementById('dateL') as HTMLInputElement).value).format('DD/MM/YYYY, h:mm a'),
       client: (document.getElementById('client') as HTMLInputElement).value,
       material: (document.getElementById('material') as HTMLInputElement).value,
       meter: (document.getElementById('mete') as HTMLInputElement).value,
@@ -52,6 +54,7 @@ const LedgersPage: React.FC = () => {
       formData.payment = 'Nill'
       formData.balance = formData.cost
     }
+  
 
     try {
       let res: any = await http.post('/ledgers', { ...formData, payment: 'Nill' })
@@ -60,6 +63,7 @@ const LedgersPage: React.FC = () => {
         let paymentRes = await http.post('/payments', {
           target_ledger: `${res.data.id}`,
           payment: formData.payment,
+          date: formData.date
         })
         dispatch(addPayment(paymentRes.data))
       }
@@ -160,7 +164,7 @@ const LedgersPage: React.FC = () => {
                           >
                             {existingClients.map((client: string, idx: number) => (
                               <option
-                                key={idx}
+                                key={randomPass(30)}
                                 value={client}
                               >
                                 {client}
@@ -168,6 +172,15 @@ const LedgersPage: React.FC = () => {
                             ))}
                           </select>
                         )}
+                      </div>
+                    </div>
+
+                    <div className="col-md-6 fv-row">
+                      <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                          <span className="required">Date</span>
+                        </label>
+                        <input type={'datetime-local'} id="dateL" required className="form-control form-control-solid" placeholder="Select Date" />
                       </div>
                     </div>
 
@@ -186,7 +199,7 @@ const LedgersPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className='col-md-6 fv-row'>
+                    <div className='col-md-4 fv-row'>
                       <div className='d-flex flex-column mb-8 fv-row fv-plugins-icon-container'>
                         <label className='d-flex align-items-center fs-6 fw-bold mb-2'>
                           <span className='required'>Meter</span>
@@ -204,7 +217,7 @@ const LedgersPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className='col-md-6 fv-row'>
+                    <div className='col-md-4 fv-row'>
                       <div className='d-flex flex-column mb-8 fv-row fv-plugins-icon-container'>
                         <label className='d-flex align-items-center fs-6 fw-bold mb-2'>
                           <span className='required'>Cost</span>
@@ -221,7 +234,7 @@ const LedgersPage: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className='col-md-6 fv-row'>
+                    <div className='col-md-4 fv-row'>
                       <div className='d-flex flex-column mb-8 fv-row fv-plugins-icon-container'>
                         <label className='d-flex align-items-center fs-6 fw-bold mb-2'>
                           <span>Payment</span>

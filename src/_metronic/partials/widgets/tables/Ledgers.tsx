@@ -4,10 +4,11 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { randomPass, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 import { addPayment } from '../../../../setup/redux/reducers/payments'
 import { updateLedger } from '../../../../setup/redux/reducers/ledgers'
+import moment from 'moment'
 
 type Props = {
   className: string
@@ -15,7 +16,8 @@ type Props = {
 
 interface PaymentUpdate {
   Payment: string
-}
+  Date: string
+} 
 
 const paymentValidationSchema = Yup.object().shape({
   Payment: Yup.number().required().min(3, 'Minimum 3 symbols'),
@@ -79,12 +81,14 @@ const Ledgers: React.FC<Props> = ({ className }) => {
   const formik = useFormik<PaymentUpdate>({
     initialValues: {
       Payment: '',
+      Date: ''
     },
     validationSchema: paymentValidationSchema,
     onSubmit: async (values, { resetForm }) => {
       const formData = {
         target_ledger: `${selectedID}`,
         payment: values.Payment,
+        date: moment(values.Date).format('DD/MM/YYYY, h:mm a')
       }
       if (+formData.payment > +currentBalance) return alert('Error, Payment exceeds Balance!')
 
@@ -94,7 +98,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
         } else {
           return currentCost - +formData.payment
         }
-      }
+      }     
 
       setLoading(true)
       try {
@@ -123,7 +127,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
       case 0:
       case undefined:
       case false:
-        return  <span style={{ paddingLeft: '17px' }}>Nill</span>          
+        return <span style={{ paddingLeft: '17px' }}>Nill</span>
       case 1:
         return <span style={{ paddingLeft: '17px' }}>₦{currentObjArr[0]?.payment}</span>
       default:
@@ -159,10 +163,10 @@ const Ledgers: React.FC<Props> = ({ className }) => {
                         </tr>
                       </thead>
                       <tbody>
-                        {currentObjArr.map((objArr: any | object) => {
+                        {currentObjArr.map((objArr: any | object, indexx: number) => {
                           return (
-                            <tr key={objArr.id}>
-                              <td>{objArr.created_at}</td>
+                            <tr key={randomPass(30)}>
+                              <td>{objArr.date}</td>
                               <td>₦{objArr.payment}</td>
                             </tr>
                           )
@@ -233,19 +237,19 @@ const Ledgers: React.FC<Props> = ({ className }) => {
             {/* begin::Table body */}
             <tbody>
               {ledgers.length ? (
-                Object.keys(segmentedClientsObj).map((key: any) => {
+                Object.keys(segmentedClientsObj).map((key: any, indd: number) => {
                   return (
-                    <>
+                    <React.Fragment key={randomPass(30)}>
                       <tr><td colSpan={100}><h3 className='text-gray-900 card-label fw-bolder fs-3 d-block' style={{ margin: '2rem 0 1.5rem 27%', width: 'max-content', textTransform: 'capitalize' }}>{key}</h3></td></tr>
                       {
-                        segmentedClientsObj[key].map((data: any) => {
+                        segmentedClientsObj[key].map((data: any, index: number) => {
                           return (
-                            <tr key={data.id}>
+                            <tr key={randomPass(30)}>
                               <td style={{ minWidth: '180px', maxWidth: 'max-content' }}>
                                 <span
                                   className='text-dark fw-bolder fs-6'
                                 >
-                                  {data.created_at}
+                                  {data.date}
                                 </span>
                               </td>
                               <td style={{ minWidth: '170px', maxWidth: 'max-content', textTransform: 'capitalize' }}>
@@ -309,7 +313,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
                           )
                         })
                       }
-                    </>)
+                    </React.Fragment>)
                 })
               )
 
@@ -331,7 +335,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
 
       < div className='modal fade' tabIndex={- 1} id='kt_modal_4' >
         <form noValidate onSubmit={formik.handleSubmit} className='pForm'>
-          <div className='modal-dialog' style={{ maxWidth: '500px' }}>
+          <div className='modal-dialog' style={{ maxWidth: '400px' }}>
             <div className='modal-content'>
               <div className='modal-header'>
                 <h5 className='modal-title'>Add Payment for {title}</h5>
@@ -348,8 +352,24 @@ const Ledgers: React.FC<Props> = ({ className }) => {
               </div>
 
               <div className='modal-body'>
+                <div className="fv-row">
+                  <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                    <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                      <span className="required">Date</span>
+                    </label>
+                    <input type={'datetime-local'} {...formik.getFieldProps('Date')} id="date" required className="form-control form-control-solid" placeholder="Select Date" />
+                    {formik.touched.Date && formik.errors.Date && (
+                      <div className='fv-plugins-message-container'>
+                        <div className='fv-help-block text-danger'>{formik.errors.Date}</div>
+                      </div>
+                    )}   
+                  </div>
+                </div>
                 <div className='fv-row'>
-                  <div className='d-flex fv-row fv-plugins-icon-container'>
+                  <div className='d-flex flex-column fv-row fv-plugins-icon-container'>
+                    <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                      <span className="required">Payment</span>
+                    </label>
                     <input
                       id='paymentf'
                       min={0}

@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import { addNewUSer, addUser } from '../../../../setup/redux/reducers/users';
-import http, { useAppSelector, useAppDispatch } from '../../../../setup/redux/useRedux';
+import http, { useAppSelector, useAppDispatch, randomPass } from '../../../../setup/redux/useRedux';
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 
 
@@ -23,18 +23,6 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
   const location = useLocation();
 
   // const isCreated = userListsData.email && userListsData;
-
-
-  const randomPass = (count: number) => {
-    const letter = "0123456789ABCDEFGHIJabcdefghijklmnopqrstuvwxyzKLMNOPQRSTUVWXYZ0123456789abcdefghiABCDEFGHIJKLMNOPQRST0123456789jklmnopqrstuvwxyz";
-    let randomString = "";
-    for (let i = 0; i <= count; i++) {
-      const randomStringNumber = Math.floor(1 + Math.random() * (letter.length - 1));
-      randomString += letter.substring(randomStringNumber, randomStringNumber + 1);
-    }
-    return (document.getElementById('password') as HTMLInputElement).value = randomString;
-  }
-
 
   const createUSer = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {
     evt.preventDefault();
@@ -134,7 +122,7 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
 
               {users.length ? users.map((data: any) => {
                 return (
-                  <tr key={data.id}>
+                  <tr key={randomPass(30)}>
                     <td style={{ minWidth: '200px', maxWidth: 'max-content'}}>
                       <div className='d-flex align-items-center'>
                         <div className='symbol symbol-35px me-5'>

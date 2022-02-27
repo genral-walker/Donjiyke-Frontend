@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { addStock } from '../../../../setup/redux/reducers/stocks'
-import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { randomPass, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 import tinycolor from 'tinycolor2';
 
@@ -74,7 +74,7 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                 stocks.map((data: any) => {
 
                   return (
-                    <tr className={returnBlackOrWhite(data.colour)} style={{ background: data.colour}}>
+                    <tr key={randomPass(30)} className={returnBlackOrWhite(data.colour)} style={{ background: data.colour}}>
                       <td style={{minWidth: '100px', maxWidth: 'max-content'}}>
                         <span className='fw-bolder fs-6'>
                           Roll {data.id}
@@ -82,7 +82,7 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                       </td>
                       <td style={{minWidth: '180px', maxWidth: 'max-content'}}>
                         <span className='fw-bolder fs-6'>
-                          {data.created_at}
+                          {data.date_in}
                         </span>
                       </td>
                       <td style={{minWidth: '110px', maxWidth: 'max-content'}}>

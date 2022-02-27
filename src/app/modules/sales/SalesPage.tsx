@@ -2,10 +2,11 @@ import React, {useEffect, useMemo, useState} from 'react'
 import {PageLink, PageTitle} from '../../../_metronic/layout/core'
 import {KTSVG} from '../../../_metronic/helpers'
 import {SalesTable} from '../../../_metronic/partials/widgets'
-import http, {useAppDispatch, useAppSelector} from '../../../setup/redux/useRedux'
+import http, {randomPass, useAppDispatch, useAppSelector} from '../../../setup/redux/useRedux'
 import {addNewSale, addSales} from '../../../setup/redux/reducers/sales'
 import {updateStock} from '../../../setup/redux/reducers/stocks'
 import { useHistory } from 'react-router-dom'
+import moment from 'moment'
 
 
 const accountBreadCrumbs: Array<PageLink> = [
@@ -56,18 +57,21 @@ const SalesPage: React.FC = () => {
     const metreOut = (document.getElementById('meter') as HTMLInputElement).value
     const issuedTo = (document.getElementById('issued_to') as HTMLInputElement).value
     const targetRoll = (document.getElementById('target_roll') as HTMLInputElement).value
+    const dateOut = moment((document.getElementById('dateOut') as HTMLInputElement).value).format('DD/MM/YYYY, h:mm a')
 
     try {
       let res: any = await http.post('/sales', {
         target_roll: targetRoll,
         metre_run: choosenRoll ? choosenRoll.balance : availableStocks[0]?.balance,
         metre_out: metreOut,
+        date_out: dateOut,
         balance: `${
           choosenRoll ? +choosenRoll.balance - +metreOut : availableStocks[0]?.balance - +metreOut
         }`,
         issuer: issuerData,
         issued_to: issuedTo,
       })
+      
 
       dispatch(addNewSale(res.data))
       alert('Sale created successfully!!')
@@ -113,7 +117,7 @@ const SalesPage: React.FC = () => {
 
         <div className='modal fade' tabIndex={-1} id='kt_modal_1'>
           <form onSubmit={submitSale}>
-            <div className='modal-dialog' style={{maxWidth: '400px'}}>
+            <div className='modal-dialog' style={{maxWidth: '800px'}}>
               <div className='modal-content'>
                 <div className='modal-header'>
                   <h5 className='modal-title'>Add New Sale</h5>
@@ -135,22 +139,6 @@ const SalesPage: React.FC = () => {
                     <div className='col fv-row'>
                       <div className='d-flex flex-column mb-8 fv-row fv-plugins-icon-container'>
                         <label className='d-flex align-items-center fs-6 fw-bold mb-2'>
-                          <span className='required'>Metre Out</span>
-                        </label>
-                        <input
-                          type='number'
-                          min={1}
-                          max={choosenRoll ? choosenRoll.balance : availableStocks[0]?.balance}
-                          id='meter'
-                          required
-                          className='form-control form-control-solid'
-                          placeholder='Enter Metre Out'
-                        />
-                      </div>
-                    </div>
-                    <div className='col fv-row'>
-                      <div className='d-flex flex-column mb-8 fv-row fv-plugins-icon-container'>
-                        <label className='d-flex align-items-center fs-6 fw-bold mb-2'>
                           <span className='required'>Select Roll</span>
                         </label>
                         <select
@@ -167,9 +155,33 @@ const SalesPage: React.FC = () => {
                         >
                           {availableStocks &&
                             availableStocks.map((stock: any) => (
-                              <option value={stock.id}>Roll {stock.id}</option>
+                              <option key={randomPass(35)} value={stock.id}>Roll {stock.id}</option>  
                             ))}
                         </select>
+                      </div>
+                    </div>
+                    <div className='col fv-row'>
+                      <div className='d-flex flex-column mb-8 fv-row fv-plugins-icon-container'>
+                        <label className='d-flex align-items-center fs-6 fw-bold mb-2'>
+                          <span className='required'>Metre Out</span>
+                        </label>
+                        <input
+                          type='number'
+                          min={1}
+                          max={choosenRoll ? choosenRoll.balance : availableStocks[0]?.balance}
+                          id='meter'
+                          required
+                          className='form-control form-control-solid'
+                          placeholder='Enter Metre Out'
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-4 fv-row">
+                      <div className="d-flex flex-column mb-8 fv-row fv-plugins-icon-container">
+                        <label className="d-flex align-items-center fs-6 fw-bold mb-2">
+                          <span className="required">Date Out</span>
+                        </label>
+                        <input type={'datetime-local'} id="dateOut" required className="form-control form-control-solid" placeholder="Select Date Out" />
                       </div>
                     </div>
                     <div className='col-12 fv-row'>

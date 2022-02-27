@@ -5,7 +5,7 @@ import { css } from 'styled-components'
 import { useHistory, useLocation } from 'react-router'
 import { addSales } from '../../../../setup/redux/reducers/sales'
 // import { saveSales } from '../../../../setup/redux/sales/salesActions'
-import http, { useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { randomPass, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 // SALES COMPONENT    
 
@@ -87,13 +87,13 @@ const SalesTable: React.FC<Props> = ({ className }) => {
             {/* end::Table head */}
             {/* begin::Table body */}
             <tbody> 
-              {Object.keys(segmentedRollsObj).length ? Object.keys(segmentedRollsObj).map((key: any) => {   
+              {Object.keys(segmentedRollsObj).length ? Object.keys(segmentedRollsObj).map((key: any, index: number) => {   
               return (
-                <>
-                 <tr><td colSpan={100}><h3 className='text-gray-900 card-label fw-bolder fs-3 d-block' style={{ margin: '2rem 0 1rem 27%', width: 'max-content' }}>Roll {key}</h3></td></tr>
+                <React.Fragment key={randomPass(30)}>
+                 <tr key={index}><td colSpan={100}><h3 className='text-gray-900 card-label fw-bolder fs-3 d-block' style={{ margin: '2rem 0 1rem 27%', width: 'max-content' }}>Roll {key}</h3></td></tr>
                  {
                    segmentedRollsObj[key].map((data: any, idx: number) => {
-                    return (<tr>
+                    return (<tr key={randomPass(30)}>
                       <td style={{ minWidth: '60px'}}>
                         <span className='text-dark fw-bolder fs-6'>
                           {idx + 1}     
@@ -106,7 +106,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                       </td>
                       <td style={{ minWidth: '180px'}}>
                         <span className='text-dark fw-bolder fs-6'>
-                          {returnStockForKGAndDateReference(data.target_roll)?.created_at}
+                          {returnStockForKGAndDateReference(data.target_roll)?.date_in}
                         </span>
                       </td>
                       <td style={{ minWidth: '120px'}}>
@@ -117,11 +117,11 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                       </td>
                       <td style={{ minWidth: '180px'}}>
                         <span className='text-dark fw-bolder fs-6'>
-                          {data.created_at}
+                          {data.date_out}
                         </span>
                       </td>
                       <td style={{ minWidth: '120px'}}>
-                        <span className='text-dark fw-bolder fs-6'>
+                        <span className='text-dark fw-bolder fs-6'> 
                           {data.metre_out} mtr
                         </span>
                       </td>
@@ -146,7 +146,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                     </tr>)
                   })
                  }
-                </>
+                </React.Fragment>
               )  
               }) :
               <tr><td colSpan={10}><h3 style={{ margin: '1rem auto', width: 'max-content' }}>No Sales Data</h3></td></tr>

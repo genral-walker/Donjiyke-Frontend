@@ -3,14 +3,12 @@ import axios, { AxiosError, AxiosResponse } from 'axios'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import type { RootState, AppDispatch } from './store'
 import store from './store';    
-      
-//http://localhost:8000/api 
-// https://api.donjiyke.com/public/api 
 
 const userToken = store.getState().user.auth.accessToken;
+const baseURL = process.env.REACT_APP_INSTANCE === 'dev' ? process.env.REACT_APP_PROJECT_URL_DEV : process.env.REACT_APP_PROJECT_URL_PROD;
 
 const httpFree = axios.create({
-  baseURL: "https://api.donjiyke.com/public/api"      
+  baseURL,   
 });
 
 httpFree.defaults.headers.post["Content-Type"] = "application/json";    
@@ -49,7 +47,7 @@ export {httpFree};
 
    
 const http = axios.create({
-  baseURL: "https://api.donjiyke.com/public/api",
+  baseURL,
   headers: {
     Authorization: `Bearer ${userToken}`,
   },
@@ -88,6 +86,18 @@ http.interceptors.request.use(
     return Promise.reject(error);     
   }
 );
+
+// UTILS   
+export const randomPass = (count: number) => {
+  const letter = "0123456789ABCDEFGHIJabcdefghijklmnopqrstuvwxyzKLMNOPQRSTUVWXYZ0123456789abcdefghiABCDEFGHIJKLMNOPQRST0123456789jklmnopqrstuvwxyz";
+  let randomString = "";
+  for (let i = 0; i <= count; i++) {
+    const randomStringNumber = Math.floor(1 + Math.random() * (letter.length - 1));
+    randomString += letter.substring(randomStringNumber, randomStringNumber + 1);
+  }
+  return (document.getElementById('password') as HTMLInputElement).value = randomString;
+}
+
 
 export default http; 
 // Use throughout your app instead of plain `useDispatch` and `useSelector`
