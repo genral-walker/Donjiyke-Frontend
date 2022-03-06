@@ -31,7 +31,7 @@ const AsideDefault: FC = () => {
             <img
               alt='Logo'
               className='h-35px logo'
-              style={{ borderRadius: '6px' }}
+              style={{ borderRadius: '6px', width: '55px' }}
               src={toAbsoluteUrl('/media/donjiyke.jpg')}
             />
           </Link>

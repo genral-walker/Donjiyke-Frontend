@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { addStock } from '../../../../setup/redux/reducers/stocks'
-import http, { randomPass, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 import tinycolor from 'tinycolor2';
 
@@ -58,14 +58,14 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
           <table className='table table-row-bordered table-row-gray-400 align-middle gs-0 gy-3'>
             {/* begin::Table head */}
             <thead>
-              <tr className='fw-bolder text-muted text-gray-700'>
-                <th className='min-w-100px'>Rolls</th>
-                <th className='min-w-180px'>Date In</th>
-                <th className='min-w-110px'>kg</th>
-                <th className='min-w-150px'>Metre Run</th>
-                <th className='min-w-170px'>Description</th>
-                <th className='min-w-110px'>Balance</th>
-              </tr>
+              <TrWrapper className='fw-bolder text-muted text-gray-700'>
+                <th>Rolls</th>
+                <th>Date In</th>
+                <th>kg</th>
+                <th>Metre Run</th>
+                <th>Description</th>
+                <th>Balance</th>
+              </TrWrapper>
             </thead>
             {/* end::Table head */}
             {/* begin::Table body */}

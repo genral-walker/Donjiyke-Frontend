@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import http, { randomPass, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 import { addPayment } from '../../../../setup/redux/reducers/payments'
 import { updateLedger } from '../../../../setup/redux/reducers/ledgers'
@@ -221,17 +221,17 @@ const Ledgers: React.FC<Props> = ({ className }) => {
           <table className='table table-row-bordered table-row-gray-400 align-middle gs-0 gy-3'>
             {/* begin::Table head */}
             <thead>
-              <tr className='fw-bolder text-muted text-gray-700'>
-                <th className='max-w-180px'>Date</th>
-                <th className='max-w-170px'>Material</th>
-                <th className='max-w-150px'>Meter</th>
-                <th className='max-w-120px'>Cost</th>
-                <th className='max-w-300px' style={{ paddingLeft: '26px' }}>Payment</th>
-                <th className='max-w-110px'>Balance</th>
+              <TrWrapper className='fw-bolder text-muted text-gray-700'>
+                <th>Date</th>
+                <th>Material</th>
+                <th>Meter</th>
+                <th>Cost</th>
+                <th style={{ paddingLeft: '26px' }}>Payment</th>
+                <th>Balance</th>
                 {location.pathname === '/crafted/pages/ledgers' && (
-                  <th className='max-w-50px'>Action</th>
+                  <th>Action</th>
                 )}
-              </tr>
+              </TrWrapper>
             </thead>
             {/* end::Table head */}
             {/* begin::Table body */}

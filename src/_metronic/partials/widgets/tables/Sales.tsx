@@ -1,11 +1,10 @@
 
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useEffect, useMemo, useState } from 'react'
-import { css } from 'styled-components'
 import { useHistory, useLocation } from 'react-router'
 import { addSales } from '../../../../setup/redux/reducers/sales'
 // import { saveSales } from '../../../../setup/redux/sales/salesActions'
-import http, { randomPass, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 // SALES COMPONENT    
 
@@ -13,12 +12,6 @@ type Props = {
   className: string
 }
 
-const thStyles = css`
-
-  min-width: max-content !important;   
-  border: 4px solid green !important;   
-
-`
 
 const SalesTable: React.FC<Props> = ({ className }) => {
 
@@ -71,18 +64,18 @@ const SalesTable: React.FC<Props> = ({ className }) => {
           <table className='table table-row-bordered table-row-gray-400 align-middle gs-0 gy-3'>
             {/* begin::Table head */}
             <thead>
-              <tr className='fw-bolder text-muted text-gray-700'>
-                <th className='max-w-60px'>S/N</th>
-                <th className='min-w-120px'>Kg</th>
-                <th className='min-w-180px'>Date In</th>
-                <th className='min-w-120px'>Metre Run</th>
-                <th className='min-w-180px'>Date Out</th>
-                <th className='min-w-120px'>Metre Out</th>
-                <th className='min-w-170px'>Description</th>
-                <th className='min-w-180px'>Issued By</th>     
-                <th className='min-w-150px'>Issued To</th>
-                <th className='min-w-120px'>Balance</th>
-              </tr>
+              <TrWrapper isSales className='fw-bolder text-muted text-gray-700'>
+                <th>S/N</th>
+                <th>Kg</th>
+                <th>Date In</th>
+                <th>Metre Run</th>  
+                <th>Date Out</th>
+                <th>Metre Out</th>
+                <th>Description</th>
+                <th>Issued By</th>     
+                <th>Issued To</th>
+                <th>Balance</th>
+              </TrWrapper>
             </thead>
             {/* end::Table head */}
             {/* begin::Table body */}
