@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useLocation } from 'react-router'
 import { addNewUSer, addUser } from '../../../../setup/redux/reducers/users';
 import http, { useAppSelector, useAppDispatch, randomPass } from '../../../../setup/redux/useRedux';
@@ -22,6 +22,7 @@ const TablesWidget10: React.FC<Props> = ({ className }) => {
 
   const location = useLocation();
 
+  useEffect(()=>{(document.getElementById('password') as HTMLInputElement).value = ''}, []);      
   // const isCreated = userListsData.email && userListsData;
 
   const createUSer = async (evt: React.FormEventHandler<HTMLFormElement> | any) => {

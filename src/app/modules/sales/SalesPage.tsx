@@ -33,9 +33,7 @@ const SalesPage: React.FC = () => {
   const dispatch = useAppDispatch()
   const [choosenRoll, setChoosenRoll] = useState<any | {}>()
   const [loading, setLoading] = useState(false)
-  const [rollOfInterest, setRollOfInterest] = useState('')
 
-  useEffect(()=> setRollOfInterest('1'),[])
 
   const availableStocks = useMemo(
     () => stocks.filter((stock: any) => parseInt(stock.balance) > 0),
@@ -57,13 +55,15 @@ const SalesPage: React.FC = () => {
 
     setLoading(true)
 
+    const targetRoll = (document.getElementById('target_roll') as HTMLInputElement).value
+    //  fix previous roll data being used for newly selected roll
     const metreOut = (document.getElementById('meter') as HTMLInputElement).value
     const issuedTo = (document.getElementById('issued_to') as HTMLInputElement).value
     const dateOut = moment((document.getElementById('dateOut') as HTMLInputElement).value).format('DD/MM/YYYY, h:mm a')
 
     try {
       let res: any = await http.post('/sales', {
-        target_roll: rollOfInterest,
+        target_roll: targetRoll,
         metre_run: choosenRoll ? choosenRoll.balance : availableStocks[0]?.balance,
         metre_out: metreOut,
         date_out: dateOut,
@@ -78,7 +78,7 @@ const SalesPage: React.FC = () => {
       dispatch(addNewSale(res.data))
       alert('Sale created successfully!!')
       try {
-        const stockUpdated = await http.patch(`/stocks/${rollOfInterest}`, {
+        const stockUpdated = await http.patch(`/stocks/${targetRoll}`, {
           balance: `${
             choosenRoll ? +choosenRoll.balance - +metreOut : availableStocks[0]?.balance - +metreOut
           }`,
@@ -145,22 +145,19 @@ const SalesPage: React.FC = () => {
                         </label>
                         <select
                           onChange={(e) =>{
-                            setRollOfInterest(e.target.value);
                             setChoosenRoll(() =>
                               availableStocks.find((stock: any) => `${stock.id}` === e.target.value)
                             )}
                           }
-                          value={rollOfInterest}
                           required
                           className='form-control form-control-solid'
                           id='target_roll'
                           aria-label='Select Roll'
                           placeholder='Select which roll to take from.'
                         >
-                          
-                          {
-                            availableStocks.map((stock: any) => (
-                              <option key={randomPass(35)} value={stock.id}>Roll {stock.id}</option>  
+                          {  
+                            availableStocks.map((stock: any) => (  
+                              <option key={stock.id} value={stock.id}>Roll {stock.id}</option>  
                             ))}
                         </select>
                       </div>

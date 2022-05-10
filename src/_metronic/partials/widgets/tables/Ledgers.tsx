@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import http, { randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { formatNumbersWithCommas, randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 import { addPayment } from '../../../../setup/redux/reducers/payments'
 import { updateLedger } from '../../../../setup/redux/reducers/ledgers'
@@ -167,7 +167,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
                           return (
                             <tr key={randomPass(30)}>
                               <td>{objArr.date}</td>
-                              <td>₦{objArr.payment}</td>
+                              <td>₦{formatNumbersWithCommas(objArr.payment)}</td>
                             </tr>
                           )
                         })}
@@ -175,7 +175,7 @@ const Ledgers: React.FC<Props> = ({ className }) => {
                           <td>
                             <h4>Total:</h4>
                           </td>
-                          <td>₦{currentObjArr?.reduce((a: any, b: any) => a + +b.payment, 0)}</td>
+                          <td>₦{formatNumbersWithCommas(currentObjArr?.reduce((a: any, b: any) => a + +b.payment, 0))}</td>
                         </tr>
                       </tbody>
                     </table>
@@ -263,28 +263,28 @@ const Ledgers: React.FC<Props> = ({ className }) => {
                                 <span
                                   className='text-dark fw-bolder fs-6'
                                 >
-                                  {data.meter} mtr
+                                  {formatNumbersWithCommas(data.meter)} mtr
                                 </span>
                               </td>
                               <td style={{ minWidth: '120px', maxWidth: 'max-content' }}>
                                 <span
                                   className='text-dark fw-bolder fs-6'
                                 >
-                                  ₦{data.cost}
+                                  ₦{formatNumbersWithCommas(data.cost)}
                                 </span>
                               </td>
                               <td style={{ minWidth: '300px', maxWidth: 'max-content' }}>
                                 <span
                                   className='text-dark fw-bolder fs-6'
                                 >
-                                  {determinePaymentInfo(data.id)}
+                                  {determinePaymentInfo(data.id)} 
                                 </span>
                               </td>
                               <td style={{ minWidth: '110px', maxWidth: 'max-content' }}>
                                 <span
                                   className='text-dark fw-bolder fs-6'
                                 >
-                                  ₦{data.balance}
+                                  ₦{formatNumbersWithCommas(data.balance)}
                                 </span>
                               </td>
                               {location.pathname === '/crafted/pages/ledgers' && data.balance != '0' && (

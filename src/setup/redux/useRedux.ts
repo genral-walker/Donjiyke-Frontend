@@ -125,6 +125,8 @@ export const TrWrapper = styled.tr`
             ${trimmedStyles}
           }
         `};
-`
+`;
+       
+export const formatNumbersWithCommas = (number: any)=> `${number}`.replace(/(.)(?=(\d{3})+$)/g,'$1,');  
 
 export default http

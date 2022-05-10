@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { addStock } from '../../../../setup/redux/reducers/stocks'
-import http, { randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { formatNumbersWithCommas, randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 import tinycolor from 'tinycolor2';
 
@@ -87,12 +87,12 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                       </td>
                       <td style={{minWidth: '110px', maxWidth: 'max-content'}}>
                         <span className='fw-bolder fs-6'>
-                          {data.kg} kg
+                          {formatNumbersWithCommas(data.kg)} kg
                         </span>
                       </td>
                       <td style={{minWidth: '150px', maxWidth: 'max-content'}}>
                         <span className='fw-bolder fs-6'>
-                          {data.metre_run} mtr  
+                          {formatNumbersWithCommas(data.metre_run)} mtr  
                         </span>
 
                       </td>
@@ -103,7 +103,7 @@ const TablesWidget13: React.FC<Props> = ({ className }) => {
                       </td>
                       <td style={{ minWidth: '110px', maxWidth: 'max-content' }}>
                         <span className='fw-bolder fs-6'>
-                          {data.balance} mtr
+                          {formatNumbersWithCommas(data.balance)} mtr
                         </span>
                       </td>
                     </tr>

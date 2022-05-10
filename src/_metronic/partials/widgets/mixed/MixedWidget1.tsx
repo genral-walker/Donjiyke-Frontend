@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react'
 import { useHistory, useLocation } from 'react-router'
-import {Dropdown1} from '../../content/dropdown/Dropdown1'
-import {KTSVG} from '../../../helpers'
-import { useAppSelector } from '../../../../setup/redux/useRedux'
+import { Dropdown1 } from '../../content/dropdown/Dropdown1'
+import { KTSVG } from '../../../helpers'
+import { formatNumbersWithCommas, useAppSelector } from '../../../../setup/redux/useRedux'
 
 
 type Props = {
@@ -11,7 +11,7 @@ type Props = {
   color: string
 }
 
-const MixedWidget1: React.FC<Props> = ({className, color}) => {
+const MixedWidget1: React.FC<Props> = ({ className, color }) => {
 
   const location = useLocation();
   const history = useHistory();
@@ -27,7 +27,7 @@ const MixedWidget1: React.FC<Props> = ({className, color}) => {
           {/* begin::Heading */}
           <div className='d-flex flex-stack'>
             <h3 className='m-0 text-white fw-bolder fs-3'>Dashboard Summary</h3>
-            <div className='ms-1' style={{pointerEvents: 'none'}}>
+            <div className='ms-1' style={{ pointerEvents: 'none' }}>
               {/* begin::Menu */}
               <button
                 type='button'
@@ -36,7 +36,7 @@ const MixedWidget1: React.FC<Props> = ({className, color}) => {
                 data-kt-menu-placement='bottom-end'
                 data-kt-menu-flip='top-end'
               >
-                <KTSVG path='/media/icons/duotune/general/gen024.svg' className='svg-icon-2'/>
+                <KTSVG path='/media/icons/duotune/general/gen024.svg' className='svg-icon-2' />
               </button>
               {/* end::Menu */}
             </div>
@@ -44,18 +44,18 @@ const MixedWidget1: React.FC<Props> = ({className, color}) => {
           {/* end::Heading */}
           {/* begin::Balance */}
           <div className='d-flex text-center flex-column text-white pt-8'>
-            <span className='fw-bold fs-5'>Total Sales</span>    
-            <span className='fw-bolder fs-2x pt-1'>{sales.length}</span>
+            <span className='fw-bold fs-5'>Total Sales</span>
+            <span className='fw-bolder fs-2x pt-1'>{formatNumbersWithCommas(`${sales.length}`)}</span>
           </div>
           <div className='d-flex text-center flex-column text-white pt-8'>
             <span className='fw-bold fs-5'>Available Stocks</span>
-            <span className='fw-bolder fs-2x pt-1'>{stocks.reduce((a:any, b: any) => a + +b.balance, 0)} mtr</span>
+            <span className='fw-bolder fs-2x pt-1'>{formatNumbersWithCommas(`${stocks.reduce((a: any, b: any) => a + +b.balance, 0)}`)} mtr</span>
           </div>
           {/* end::Balance */}
         </div>
         {/* end::Header */}
         {/* begin::Items */}
-      
+
         {/* end::Items */}
       </div>
       {/* end::Body */}
@@ -63,4 +63,4 @@ const MixedWidget1: React.FC<Props> = ({className, color}) => {
   )
 }
 
-export {MixedWidget1}
+export { MixedWidget1 }

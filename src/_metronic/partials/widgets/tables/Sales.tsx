@@ -4,7 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useHistory, useLocation } from 'react-router'
 import { addSales } from '../../../../setup/redux/reducers/sales'
 // import { saveSales } from '../../../../setup/redux/sales/salesActions'
-import http, { randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
+import http, { formatNumbersWithCommas, randomPass, TrWrapper, useAppDispatch, useAppSelector } from '../../../../setup/redux/useRedux'
 import { KTSVG, toAbsoluteUrl } from '../../../helpers'
 // SALES COMPONENT    
 
@@ -94,7 +94,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                       </td>
                       <td style={{ minWidth: '120px' }}>
                         <span className='text-dark fw-bolder fs-6'>
-                          {returnStockForKGAndDateReference(data.target_roll)?.kg} kg        
+                          {formatNumbersWithCommas(`${returnStockForKGAndDateReference(data.target_roll)?.kg}`)} kg        
                         </span>  
                       </td>
                       <td style={{ minWidth: '180px'}}>
@@ -104,7 +104,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                       </td>
                       <td style={{ minWidth: '120px'}}>
                         <span className='text-dark fw-bolder fs-6'>
-                          {data.metre_run} mtr
+                          {formatNumbersWithCommas(`${data.metre_run}`)} mtr
                         </span>
     
                       </td>
@@ -115,7 +115,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                       </td>
                       <td style={{ minWidth: '120px'}}>
                         <span className='text-dark fw-bolder fs-6'> 
-                          {data.metre_out} mtr
+                          {formatNumbersWithCommas(`${data.metre_out}`)} mtr
                         </span>
                       </td>
                       <td style={{ minWidth: '170px', maxWidth: '250px' }}>
@@ -134,7 +134,7 @@ const SalesTable: React.FC<Props> = ({ className }) => {
                         </span>
                       </td>
                       <td  style={{ minWidth: '120px'}}>
-                        <span className='text-dark fw-bolder fs-6'>{data.balance} mtr</span>
+                        <span className='text-dark fw-bolder fs-6'>{formatNumbersWithCommas(`${data.balance}`)} mtr</span>
                       </td>
                     </tr>)
                   })
